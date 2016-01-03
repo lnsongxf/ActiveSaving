@@ -738,8 +738,27 @@ z11$uniqueID <- (z11$'1968IntNum' * 1000) + z11$'1968PersonNum'
 z13$uniqueID <- (z13$'1968IntNum' * 1000) + z13$'1968PersonNum'
 
 # merge two timepoints together,
-# regardless of a match between the timepoints
-x <- merge( z84 , z89, by = c('uniqueID',all = FALSE )
+# by matching unique ID
+#84 & 89
+x8489 <- merge( z84 , z89, by = c('uniqueID', 'one',
+                              'intNum84',  'intNum89',  'intNum94',  'intNum99',  'intNum01',
+                              'intNum03',  'intNum05',  'intNum07',  'intNum09',  'intNum11',
+                              'intNum13',
+                              '1968IntNum', '1968PersonNum', 'PrimarySamplingUnit', 'Stratification',
+                              'sequenceNum84', 'sequenceNum89', 'sequenceNum94', 'sequenceNum99', 'sequenceNum01', 
+                              'sequenceNum03', 'sequenceNum05', 'sequenceNum07', 'sequenceNum09', 'sequenceNum11', 
+                              'sequenceNum13',
+                              'sex', 
+                              'empStatus84', 'empStatus89', 'empStatus94', 'empStatus99', 'empStatus01', 
+                              'empStatus03', 'empStatus05', 'empStatus07', 'empStatus09', 'empStatus11', 
+                              'empStatus13',
+                              'age84', 'age89', 'age94', 'age99', 'age01',
+                              'age03', 'age05', 'age07', 'age09', 'age11', 
+                              'age13',
+                              'hhRelStatus84', 'hhRelStatus89', 'hhRelStatus94', 'hhRelStatus99', 'hhRelStatus01', 
+                              'hhRelStatus03', 'hhRelStatus05', 'hhRelStatus07', 'hhRelStatus09', 'hhRelStatus11', 
+                              'hhRelStatus13',
+                              'currSchoolLev', 'highestSchoolLev', 'longWeight95', 'longWeight99'), all = FALSE )
 
 # only keep those records whose head of household has not changed between waves
 # keep each record whose hhHead89's uniqueID = hhHead84's uniqueID
