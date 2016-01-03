@@ -1,7 +1,7 @@
 #File to replicate Cooper (2006) - calculating 'active savings'
-
+rm(list = ls()); gc()
 # set working directory.
-setwd("/Users/Rachel/Documents/PhD/Research\ ideas/Nonlinearity/PSID")
+setwd("/Users/Rachel/Documents/PhD/Research ideas/Nonlinearity/PSID/ActiveSaving/")
 
 
 library(survey)    # load survey package (analyzes complex design surveys)   
@@ -18,7 +18,7 @@ load( "ind.rda" )
 # limit the file to only the variables needed
 ind.KeepVars <-
   c( 
-    'one' ,  		  # column with all ones
+    'one' ,    	  # column with all ones
     'er30001' , 	# 1968 interview number
     'er30002' ,   # 1968 person number
     'er31997' ,		# primary sampling unit variable
@@ -156,7 +156,7 @@ w <- rename(w, c("er30001" = "1968IntNum",
                  'er33227' = "highestSchoolLev",
                  'er33275' = "longWeight95",
                  'er33546' = "longWeight99"
-                   ))
+))
 
 # remove the original data.frame object then free up memory
 rm( ind ) ; gc()
@@ -286,7 +286,7 @@ f03.KeepVars <-
     'er22617',   # other assets 
     'er21117',   # moved?
     'er21043'    # house value
-)
+  )
 w03.KeepVars <-
   c(
     'ER21002', # family interview number
@@ -518,7 +518,7 @@ rm(f84.KeepVars, f89.KeepVars, f94.KeepVars, f99.KeepVars, f01.KeepVars,
 
 
 # rename remaining variables something useful
-z84 <- rename( z84, c('v10002' = 'familyIntNum84',
+z84 <- rename( z84, c('v10002' = 'intNum84',
                       'v10908' = 'farmBusiness84',
                       'v10913' = 'stocks84',
                       'v10899' = 'othRealEstate84',
@@ -531,7 +531,7 @@ z84 <- rename( z84, c('v10002' = 'familyIntNum84',
                       'S107'= 'othDebt84',
                       'S120'= 'homeEquity84'))
 
-z89 <- rename( z89, c('v16302' = 'familyIntNum89',
+z89 <- rename( z89, c('v16302' = 'intNum89',
                       'v17323' = 'farmBusiness89',
                       'v17326' = 'stocks89',
                       'v17318' = 'othRealEstate89',
@@ -544,161 +544,229 @@ z89 <- rename( z89, c('v16302' = 'familyIntNum89',
                       'S207' = 'othDebt89',
                       'S220' = 'homeEquity89'))
 
-z94 <- rename(z94, c('er2002' = 'familyIntNum94',
-                'er3731' = 'farmBusiness94',
-                'er3736' = 'stocks94',
-                'er3722' = 'othRealEstate94',
-                'er3726' = 'vehicles94',
-                'er2037' = 'mortgageDebt94',
-                'er3748' = 'otherAssets94',
-                'er2062' = 'wtrMoved94',
-                'er2033' = 'houseValue94',
-                'S305' = 'checkingAccount94',
-                'S307' = 'othDebt94',
-                'S320' = 'homeEquity94'))
+z94 <- rename(z94, c('er2002' = 'intNum94',
+                     'er3731' = 'farmBusiness',
+                     'er3736' = 'stocks',
+                     'er3722' = 'othRealEstate',
+                     'er3726' = 'vehicles',
+                     'er2037' = 'mortgageDebt',
+                     'er3748' = 'otherAssets',
+                     'er2062' = 'wtrMoved',
+                     'er2033' = 'houseValue',
+                     'S305' = 'checkingAccount',
+                     'S307' = 'othDebt',
+                     'S320' = 'homeEquity'))
 
-z99 <- rename( z99, c('er13002' = 'familyIntNum99',
-                       'er15002' = 'farmBusiness99',
-                       'er15007' = 'stocks99',
-                       'er14993' = 'othRealEstate99',
-                       'er14997' = 'vehicles99',
-                       'er13047' = 'mortgageDebt99',
-                       'er15026' = 'othAssets99',
-                       'er13077' = 'wtrMoved99',
-                       'er13041' = 'houseValue99',
-                       'S405' = 'checkingAccount99',
-                       'S407' = 'othDebt99',
-                       'S420' = 'homeEquity99'))
+z99 <- rename( z99, c('er13002' = 'intNum99',
+                      'er15002' = 'farmBusiness',
+                      'er15007' = 'stocks',
+                      'er14993' = 'othRealEstate',
+                      'er14997' = 'vehicles',
+                      'er13047' = 'mortgageDebt',
+                      'er15026' = 'othAssets',
+                      'er13077' = 'wtrMoved',
+                      'er13041' = 'houseValue',
+                      'S405' = 'checkingAccount',
+                      'S407' = 'othDebt',
+                      'S420' = 'homeEquity'))
 
-z01 <- rename(z01, c('er17002' = 'familyIntNumber01', 
-                     'er19198' = 'farmBusiness01',
-                     'er19203' = 'stocks01',
-                     'er19189' = 'othRealEstate01',
-                     'er19193' = 'vehicles01',
-                     'er17052' = 'mortgageDebt01',
-                     'er19222' = 'othAssets01',
-                     'er17088' = 'wtrMoved01',
-                     'er17044' = 'houseValue01',
-                     'S505' = 'checkingAccount01',
-                     'S507' = 'othDebt01',
-                     'S520' = 'homeEquity01'))
+z01 <- rename(z01, c('er17002' = 'intNum01', 
+                     'er19198' = 'farmBusiness',
+                     'er19203' = 'stocks',
+                     'er19189' = 'othRealEstate',
+                     'er19193' = 'vehicles',
+                     'er17052' = 'mortgageDebt',
+                     'er19222' = 'othAssets',
+                     'er17088' = 'wtrMoved',
+                     'er17044' = 'houseValue',
+                     'S505' = 'checkingAccount',
+                     'S507' = 'othDebt',
+                     'S520' = 'homeEquity'))
 
-z03 <- rename(z03, c('er21002' = 'familyIntNum03',
-               'er22563' = 'farmBusiness03',
-               'er22568' = 'stocks03',
-               'er22554' = 'othRealEstate03',
-               'er22558' = 'vehicles03',
-               'er21051' = 'mortgageDebt03', 
-               'er22617' = 'othAssets03', 
-               'er21117' = 'wtrMoved03',
-               'er21043' = 'houseValue03',
-               'S605' = 'checkingAccount03',
-               'S607' = 'othDebt03',
-               'S620' = 'homeEquity'))
+z03 <- rename(z03, c('er21002' = 'intNum03',
+                     'er22563' = 'farmBusiness',
+                     'er22568' = 'stocks',
+                     'er22554' = 'othRealEstate',
+                     'er22558' = 'vehicles',
+                     'er21051' = 'mortgageDebt', 
+                     'er22617' = 'othAssets', 
+                     'er21117' = 'wtrMoved',
+                     'er21043' = 'houseValue',
+                     'S605' = 'checkingAccount',
+                     'S607' = 'othDebt',
+                     'S620' = 'homeEquity'))
 
-z05 <- rename( z05, c('er25002' = 'familyIntNum05',
-                      'er26544' = 'farmBusiness05',
-                      'er26549' = 'stocks05',
-                      'er26535' = 'othRealEstate05',
-                      'er26539' = 'vehicles05',
-                      'er25042' = 'mortgageDebt05',
-                      'er26598' = 'othAssets05',
-                      'er25098' = 'wtrMoved05',
-                      'er25029' = 'houseValue05',
-                      'S705' = 'checkingAccount05',
-                      'S707' = 'othDebt05',
-                      'S720' = 'homeEquity05'))
+z05 <- rename( z05, c('er25002' = 'intNum05',
+                      'er26544' = 'farmBusiness',
+                      'er26549' = 'stocks',
+                      'er26535' = 'othRealEstate',
+                      'er26539' = 'vehicles',
+                      'er25042' = 'mortgageDebt',
+                      'er26598' = 'othAssets',
+                      'er25098' = 'wtrMoved',
+                      'er25029' = 'houseValue',
+                      'S705' = 'checkingAccount',
+                      'S707' = 'othDebt',
+                      'S720' = 'homeEquity'))
 
-z07 <- rename(z07, c('er36002' = 'familyIntNum07',
-                     'er37562' = 'farmBusiness07', 
-                     'er37567' = 'stocks07',
-                     'er37553' = 'othRealEstate07',
-                     'er37557' = 'vehicles07',
-                     'er36042' = 'mortgageDebt07',
-                     'er37616' = 'othAssets07',
-                     'er36103' = 'wtrMoved07',
-                     'er36029' = 'houseValue07',
-                     'S805' = 'checkingAccount07',
-                     'S807' = 'othDebt07',
-                     'S820' = 'homeEquity07'))
+z07 <- rename(z07, c('er36002' = 'intNum07',
+                     'er37562' = 'farmBusiness', 
+                     'er37567' = 'stocks',
+                     'er37553' = 'othRealEstate',
+                     'er37557' = 'vehicles',
+                     'er36042' = 'mortgageDebt',
+                     'er37616' = 'othAssets',
+                     'er36103' = 'wtrMoved',
+                     'er36029' = 'houseValue',
+                     'S805' = 'checkingAccount',
+                     'S807' = 'othDebt',
+                     'S820' = 'homeEquity'))
 
-z09 <- rename(z09, c('er42002' = 'familyIntNum09',
-                     'er43553' = 'farmBusiness09',
-                     'er46942' = 'checkingAccount09',
-                     'er43558' = 'stocks09',
-                     'er43544' = 'othRealEstate09', 
-                     'er46966' = 'homeEquity09',
-                     'er43548' = 'vehicles09',
-                     'er42043' = 'mortgageDebt09',
-                     'er43607' = 'othAssets09',
-                     'er42132' = 'wtrmoved09',
-                     'er43612' = 'othDebt09',
-                     'er42030' = 'houseValue09'))
+z09 <- rename(z09, c('er42002' = 'intNum09',
+                     'er43553' = 'farmBusiness',
+                     'er46942' = 'checkingAccount',
+                     'er43558' = 'stocks',
+                     'er43544' = 'othRealEstate', 
+                     'er46966' = 'homeEquity',
+                     'er43548' = 'vehicles',
+                     'er42043' = 'mortgageDebt',
+                     'er43607' = 'othAssets',
+                     'er42132' = 'wtrmoved',
+                     'er43612' = 'othDebt',
+                     'er42030' = 'houseValue'))
 
-z11 <- rename(z11, c('er47302' = 'familyIntNum11',
-                     'er48878' = 'farmBusiness11',
-                     'er52350' = 'checkingAccount11',
-                     'er48883' = 'stocks11',
-                     'er48869' = 'othRealEstate11',
-                     'er52390' = 'homeEquity11',
-                     'er48873' = 'vehicles11',
-                     'er47348' = 'mortgageDebt11',
-                     'er48932' = 'otherAssets11',
-                     'er47440' = 'wtrMoved11',
-                     'er47330' = 'houseValue11',
-                     'er52372' = 'cCardDebt11',
-                     'er48945' = 'studentDebt11',
-                     'er52380' = 'medicalDebt11',
-                     'er52384' = 'legalDebt11',
-                     'er52376' = 'loansFromRelatives11'))
+z11 <- rename(z11, c('er47302' = 'intNum11',
+                     'er48878' = 'farmBusiness',
+                     'er52350' = 'checkingAccount',
+                     'er48883' = 'stocks',
+                     'er48869' = 'othRealEstate',
+                     'er52390' = 'homeEquity',
+                     'er48873' = 'vehicles',
+                     'er47348' = 'mortgageDebt',
+                     'er48932' = 'otherAssets',
+                     'er47440' = 'wtrMoved',
+                     'er47330' = 'houseValue',
+                     'er52372' = 'cCardDebt',
+                     'er48945' = 'studentDebt',
+                     'er52380' = 'medicalDebt',
+                     'er52384' = 'legalDebt',
+                     'er52376' = 'loansFromRelatives'))
 
-z13 <- rename( z13, c('er53002' = 'familyIntNum13',
-                      'er54625' = 'farmBusiness13',
-                      'er58161' = 'checkingSavings13',
-                      'er54634' = 'stocks13',
-                      'er58165' = 'othRealEstate13',
-                      'er58207' = 'homeEquity13',
-                      'er54620' = 'vehicles13',
-                      'er53048' = 'mortgageDebt13',
-                      'er54682' = 'othAssets13',
-                      'er53140' = 'wtrMoved13',
-                      'er53030' = 'houseValue13',
-                      'er58185' = 'cCardDebt13',
-                      'er54697' = 'studentDebt13',
-                      'er58193' = 'medicalDebt13',
-                      'er58197' = 'legalDebt13',
-                      'er58189' = 'loansFromRelatives13'))
+z13 <- rename( z13, c('er53002' = 'intNum13',
+                      'er54625' = 'farmBusiness',
+                      'er58161' = 'checkingSavings',
+                      'er54634' = 'stocks',
+                      'er58165' = 'othRealEstate',
+                      'er58207' = 'homeEquity',
+                      'er54620' = 'vehicles',
+                      'er53048' = 'mortgageDebt',
+                      'er54682' = 'othAssets',
+                      'er53140' = 'wtrMoved',
+                      'er53030' = 'houseValue',
+                      'er58185' = 'cCardDebt',
+                      'er54697' = 'studentDebt',
+                      'er58193' = 'medicalDebt',
+                      'er58197' = 'legalDebt',
+                      'er58189' = 'loansFromRelatives'))
 
 # create one debt variable for 2011 & 2013
-z11$'othDebt11' = z11$'cCardDebt11' + z11$'studentDebt11' + z11$'medicalDebt11' + z11$'legalDebt11' + z11$'loansFromRelatives11'
-z13$'othDebt13' = z13$'cCardDebt13' + z13$'studentDebt13' + z13$'medicalDebt13' + z13$'legalDebt13' + z13$'loansFromRelatives13'
+z11$othDebt = z11$cCardDebt + z11$studentDebt + z11$medicalDebt + z11$legalDebt + z11$loansFromRelatives
+z13$othDebt = z13$cCardDebt + z13$studentDebt + z13$medicalDebt + z13$legalDebt + z13$loansFromRelatives
 
-# maintain only record which have the same household head year to year
-# To create a single year Head/Wife file: Select individuals with Relationship to Head of "Head"
+# drop other debt files
+z11 <- subset(z11, select = -c(cCardDebt, studentDebt, medicalDebt, legalDebt, loansFromRelatives) )
+z13 <- subset(z13, select = -c(cCardDebt, studentDebt, medicalDebt, legalDebt, loansFromRelatives) )
+
+# maintain only record which have the same household head year to year - this means no splitoffs
+# To create a single year Head file: Select individuals with Relationship to Head of "Head"
 # (a code value of 1 for 1968-1982; code 10 from 1983 onward) and with values for Sequence Number
 # in the range 1-20.
-
 #The combination of the 1968 ID and the person number uniquely identify each individual. 
 #To identify an individual across waves use the 1968 ID and Person Number 68 Summary Variables ER30001 and ER30002. Though you can combine them uniquely in many ways we find that many researchers use the following method:
 #(ER30001 * 1000) + ER30002
 #(1968 ID multiplied by 1000) plus Person Number 68
 #"er30001" = "1968IntNum"
 #'er30002' = "1968PersonNum"
+#'
+#'Each family unit in a specific wave is assigned a unique "Family Interview (ID) Number" valid for that wave only.
+#' In addition, each family also has a "1968 Family Identifier", also known as the "1968 ID". 
+#' This is the Family Interview (ID) Number that was assigned to the original family in the 1968 interviewing wave.
+#' When sample members in any family move out and establish their own household, we interview them
+#'(these families are called "splitoffs", in the first year they are formed). These new "splitoff" families have
+#'the same 1968 ID as the family they moved out of, and keep that same 1968 ID each year. All families with the 
+#'same 1968 ID contain at least one of the original members from the 1968 family or their lineal
+#' descendents born after 1968.
 
-x <- merge( z84 , z89 , all = TRUE )
+
+# variable = 1 if household head, 0 otherwise
+z84$hhHead84 <- ifelse( z84$'hhRelStatus84' == 10 
+                      & z84$'sequenceNum84' <= 20, 1, 0 )
+z89$hhHead89 <- ifelse( z89$'hhRelStatus89' == 10 
+                      & z89$'sequenceNum89' <= 20, 1, 0 )
+z94$hhHead94 <- ifelse( z94$'hhRelStatus94' == 10 
+                        & z94$'sequenceNum94' <= 20, 1, 0 )
+z99$hhHead99 <- ifelse( z99$'hhRelStatus99' == 10 
+                        & z99$'sequenceNum99' <= 20, 1, 0 )
+z01$hhHead01 <- ifelse( z01$'hhRelStatus01' == 10 
+                        & z01$'sequenceNum01' <= 20, 1, 0 )
+z03$hhHead03 <- ifelse( z03$'hhRelStatus03' == 10 
+                        & z03$'sequenceNum03' <= 20, 1, 0 )
+z05$hhHead05 <- ifelse( z05$'hhRelStatus05' == 10 
+                        & z05$'sequenceNum05' <= 20, 1, 0 )
+z07$hhHead07 <- ifelse( z07$'hhRelStatus07' == 10 
+                        & z07$'sequenceNum07' <= 20, 1, 0 )
+z09$hhHead09 <- ifelse( z09$'hhRelStatus09' == 10 
+                        & z09$'sequenceNum09' <= 20, 1, 0 )
+z11$hhHead11 <- ifelse( z11$'hhRelStatus11' == 10 
+                        & z11$'sequenceNum11' <= 20, 1, 0 )
+z13$hhHead13 <- ifelse( z13$'hhRelStatus13' == 10 
+                        & z13$'sequenceNum13' <= 20, 1, 0 )
 
 
 
 # create a unique identifier variable for each individual
 z84$uniqueID <- (z84$'1968IntNum' * 1000) + z84$'1968PersonNum'
 z89$uniqueID <- (z89$'1968IntNum' * 1000) + z89$'1968PersonNum'
+z94$uniqueID <- (z94$'1968IntNum' * 1000) + z94$'1968PersonNum'
+z99$uniqueID <- (z99$'1968IntNum' * 1000) + z99$'1968PersonNum'
+z01$uniqueID <- (z01$'1968IntNum' * 1000) + z01$'1968PersonNum'
+z03$uniqueID <- (z03$'1968IntNum' * 1000) + z03$'1968PersonNum'
+z05$uniqueID <- (z05$'1968IntNum' * 1000) + z05$'1968PersonNum'
+z07$uniqueID <- (z07$'1968IntNum' * 1000) + z07$'1968PersonNum'
+z09$uniqueID <- (z09$'1968IntNum' * 1000) + z09$'1968PersonNum'
+z11$uniqueID <- (z11$'1968IntNum' * 1000) + z11$'1968PersonNum'
+z13$uniqueID <- (z13$'1968IntNum' * 1000) + z13$'1968PersonNum'
 
-# variable = 1 if household head, 0 otherwise
-z84$hhHead <- ifelse( z84$'hhRelStatus84' == 10 
-                      & z84$'sequenceNum84' <= 20, 1, 0 )
-z89$hhHead <- ifelse( z89$'hhRelStatus89' == 10 
-                      & z89$'sequenceNum89' <= 20, 1, 0 )
+# merge two timepoints together,
+# regardless of a match between the timepoints
+x <- merge( z84 , z89, by = c('uniqueID',all = FALSE )
 
+# only keep those records whose head of household has not changed between waves
+# keep each record whose hhHead89's uniqueID = hhHead84's uniqueID
+
+#first make a subset of families that respond in the years we are comparing
+#for(intNum in unique(z84$'1968IntNum')){
+#  temp1 <- subset(z84, z84$'1968IntNum' == intNum &
+#                     z84$'hhHead84'==1)
+#  temp2 <-subset(z89, z89$'1968IntNum' == intNum &
+#                   z89$'hhHead84'==1)
+#  print(temp1['uniqueID'] == temp2['uniqueID'])
+  
+#}
+#intNum = 3
+#temp1 <- subset(z84, z84$'familyIntNum' == intNum &
+#                  z84$'hhHead84'==1)
+#iD <- temp1$'uniqueID'[1]
+#temp2 <-subset(z89, z89$'uniqueID' == iD)
+
+#x <-merge(z84, z89, by='uniqueID', all=FALSE)
+#x <-subset(x, hhHead84==1 & hhHead89==1) 
+
+
+#x$headSame <- ifelse(xor(x$hhHead89==1,hhHead84==1)& )
+#x <- subset(x,
+#            x$hhHead89==1|hhHead84==1)
+                     
 
 
 #stocks + 
@@ -710,7 +778,11 @@ z89$hhHead <- ifelse( z89$'hhRelStatus89' == 10
 #dfs <- list(
 #z84, z89, z94, z99, z01, z03, z05,z07, z09, z11, z13
 #)
-#x <- join_all(dfs, type = "full")
+#y <- join_all(dfs, by = 'uniqueID', type = "full")
+#y <- subset(y, hhHead84 ==1 & hhHead89 ==1 & hhHead94 ==1 &
+#              hhHead99 ==1 & hhHead01 ==1 & hhHead03 ==1 &
+#              hhHead05 ==1 & hhHead07 ==1 & hhHead09 ==1 &
+#              hhHead11 ==1 & hhHead13 ==1)
 
 #x <- merge(z05, z07, all=TRUE)
 # get rid of separate files, dfs
@@ -729,3 +801,4 @@ z89$hhHead <- ifelse( z89$'hhRelStatus89' == 10
 
 #rm(list = ls()); gc()
 
+#
