@@ -550,7 +550,7 @@ z94 <- rename(z94, c('er2002' = 'intNum94',
                      'er3722' = 'othRealEstate94',
                      'er3726' = 'vehicles94',
                      'er2037' = 'mortgageDebt94',
-                     'er3748' = 'otherAssets94',
+                     'er3748' = 'othAssets94',
                      'er2062' = 'wtrMoved94',
                      'er2033' = 'houseValue94',
                      'S305' = 'checkingAccount94',
@@ -677,6 +677,8 @@ z13$othDebt13 = z13$cCardDebt13 + z13$studentDebt13 + z13$medicalDebt13 + z13$le
 z11 <- subset(z11, select = -c(cCardDebt11, studentDebt11, medicalDebt11, legalDebt11, loansFromRelatives11) )
 z13 <- subset(z13, select = -c(cCardDebt13, studentDebt13, medicalDebt13, legalDebt13, loansFromRelatives13) )
 
+
+
 # maintain only record which have the same household head year to year - this means no splitoffs
 # To create a single year Head file: Select individuals with Relationship to Head of "Head"
 # (a code value of 1 for 1968-1982; code 10 from 1983 onward) and with values for Sequence Number
@@ -738,45 +740,123 @@ z11$uniqueID <- (z11$'1968IntNum' * 1000) + z11$'1968PersonNum'
 z13$uniqueID <- (z13$'1968IntNum' * 1000) + z13$'1968PersonNum'
 
 # merge two timepoints together,
-# by matching unique ID
-#84 & 89
-x8489 <- merge( z84 , z89, by = c('uniqueID', 'one',
-                              'intNum84',  'intNum89',  'intNum94',  'intNum99',  'intNum01',
-                              'intNum03',  'intNum05',  'intNum07',  'intNum09',  'intNum11',
-                              'intNum13',
-                              '1968IntNum', '1968PersonNum', 'PrimarySamplingUnit', 'Stratification',
-                              'sequenceNum84', 'sequenceNum89', 'sequenceNum94', 'sequenceNum99', 'sequenceNum01', 
-                              'sequenceNum03', 'sequenceNum05', 'sequenceNum07', 'sequenceNum09', 'sequenceNum11', 
-                              'sequenceNum13',
-                              'sex', 
-                              'empStatus84', 'empStatus89', 'empStatus94', 'empStatus99', 'empStatus01', 
-                              'empStatus03', 'empStatus05', 'empStatus07', 'empStatus09', 'empStatus11', 
-                              'empStatus13',
-                              'age84', 'age89', 'age94', 'age99', 'age01',
-                              'age03', 'age05', 'age07', 'age09', 'age11', 
-                              'age13',
-                              'hhRelStatus84', 'hhRelStatus89', 'hhRelStatus94', 'hhRelStatus99', 'hhRelStatus01', 
-                              'hhRelStatus03', 'hhRelStatus05', 'hhRelStatus07', 'hhRelStatus09', 'hhRelStatus11', 
-                              'hhRelStatus13',
-                              'currSchoolLev', 'highestSchoolLev', 'longWeight95', 'longWeight99'), all = FALSE )
+# by matching unique ID (and individual variables)
+mergeCriteria = c('uniqueID', 'one',
+                  'intNum84',  'intNum89',  'intNum94',  'intNum99',  'intNum01',
+                  'intNum03',  'intNum05',  'intNum07',  'intNum09',  'intNum11',
+                  'intNum13',
+                  '1968IntNum', '1968PersonNum', 'PrimarySamplingUnit', 'Stratification',
+                  'sequenceNum84', 'sequenceNum89', 'sequenceNum94', 'sequenceNum99', 'sequenceNum01', 
+                  'sequenceNum03', 'sequenceNum05', 'sequenceNum07', 'sequenceNum09', 'sequenceNum11', 
+                  'sequenceNum13',
+                  'sex', 
+                  'empStatus84', 'empStatus89', 'empStatus94', 'empStatus99', 'empStatus01', 
+                  'empStatus03', 'empStatus05', 'empStatus07', 'empStatus09', 'empStatus11', 
+                  'empStatus13',
+                  'age84', 'age89', 'age94', 'age99', 'age01',
+                  'age03', 'age05', 'age07', 'age09', 'age11', 
+                  'age13',
+                  'hhRelStatus84', 'hhRelStatus89', 'hhRelStatus94', 'hhRelStatus99', 'hhRelStatus01', 
+                  'hhRelStatus03', 'hhRelStatus05', 'hhRelStatus07', 'hhRelStatus09', 'hhRelStatus11', 
+                  'hhRelStatus13',
+                  'currSchoolLev', 'highestSchoolLev', 'longWeight95', 'longWeight99')
+
+# 84 & 89
+x8489 <- merge( z84 , z89, by = mergeCriteria, all = FALSE )
+# 89 & 94
+x8994 <- merge( z89 , z94, by = mergeCriteria, all = FALSE )
+
+rm(mergeCriteria)
+
+# restrict sample to being responsive in each year
+x8489 <-subset(x8489, intNum84>0 & intNum89>0)
+x8994 <-subset(x8994, intNum89>0 & intNum94>0)
+
+# get rid of DK/refused/NA values
+x8489 <-subset(x8489, farmBusiness84<9999996 & farmBusiness89<9999996 
+               & stocks84<9999996 & stocks89<9999996 
+               & vehicles84<999997 & vehicles89<999997 
+               & othAssets84<9999997 & othAssets89<9999997)
 
 # only keep those records whose head of household has not changed between waves
 # keep each record whose hhHead89's uniqueID = hhHead84's uniqueID
 
-#first make a subset of families that respond in the years we are comparing
-#for(intNum in unique(z84$'1968IntNum')){
-#  temp1 <- subset(z84, z84$'1968IntNum' == intNum &
-#                     z84$'hhHead84'==1)
-#  temp2 <-subset(z89, z89$'1968IntNum' == intNum &
-#                   z89$'hhHead84'==1)
-#  print(temp1['uniqueID'] == temp2['uniqueID'])
-  
-#}
-#intNum = 3
-#temp1 <- subset(z84, z84$'familyIntNum' == intNum &
-#                  z84$'hhHead84'==1)
-#iD <- temp1$'uniqueID'[1]
-#temp2 <-subset(z89, z89$'uniqueID' == iD)
+# make a list of interview numbers in 1989 such that the household head
+# is the same as the household head in 1984. By interview number means
+# we retain all family records, not just those of the hh head.
+
+#84-89
+familySameHead8489 <- c()
+for(intNum in unique(x8489$'intNum89')){
+  temp1 <- subset(x8489, x8489$'intNum89' ==  intNum & x8489$'hhHead89' == 1)
+  if (dim(temp1)[1] != 1){
+    print(dim(temp1)[1])
+    next
+  } else{
+    if(temp1$'hhHead84'==1){
+    familySameHead8489 <- c(familySameHead8489, intNum)
+  }
+  }
+}
+rm(temp1, intNum)
+
+x8489 <-subset(x8489, x8489$'intNum89' %in% familySameHead8489)
+
+#89-94
+familySameHead8994 <- c()
+for(intNum in unique(x8994$'intNum94')){
+  temp1 <- subset(x8994, x8994$'intNum94' ==  intNum & x8994$'hhHead94' == 1)
+  if (dim(temp1)[1] != 1){
+    print(dim(temp1)[1])
+    next
+  } else{
+    if(temp1$'hhHead89'==1){
+      familySameHead8994 <- c(familySameHead8994, intNum)
+    }
+  }
+}
+rm(temp1, intNum)
+
+x8994 <-subset(x8994, x8994$'intNum94' %in% familySameHead8994)
+
+
+# calculate active saving
+x8489$activeSaving <- x8489$'farmBusiness89' - x8489$'farmBusiness84' + 
+  x8489$'checkingAccount89'- x8489$'checkingAccount84' + 
+  x8489$'othRealEstate89' - x8489$'othRealEstate84' + 
+  x8489$'stocks89' - x8489$'stocks84' + 
+  x8489$'vehicles89' - x8489$'vehicles84' + 
+  x8489$'othAssets89' - x8489$'othAssets84' - 
+  (x8489$'othDebt89' - x8489$'othDebt84') + 
+  x8489$'homeEquity89' - x8489$'homeEquity84'
+
+x8994$activeSaving <- x8994$'farmBusiness94' - x8994$'farmBusiness89' + 
+  x8994$'checkingAccount94'- x8994$'checkingAccount89' + 
+  x8994$'othRealEstate94' - x8994$'othRealEstate89' + 
+  x8994$'stocks94' - x8994$'stocks89' + 
+  x8994$'vehicles94' - x8994$'vehicles89' + 
+  x8994$'othAssets94' - x8994$'othAssets89' - 
+  (x8994$'othDebt94' - x8994$'othDebt89') + 
+  x8994$'homeEquity94' - x8994$'homeEquity89'
+
+# sort dissavers to savers, limit to hhHead, limit to matching uniqueIDs & plot
+x8489sorted <- subset(x8489,x8489$hhHead89==1)
+x8994sorted <- subset(x8994,x8994$hhHead94==1)
+x8489_94 <- merge(x8489sorted, x8994sorted, by='uniqueID', all=FALSE)
+
+saving84_89_94 <-x8489_94[c('activeSaving.x', 'activeSaving.y')]
+saving84_89_94_sorted <- saving84_89_94[order(saving84_89_94$'activeSaving.x'),]
+
+plot(saving84_89_94_sorted)
+
+# plot only savers
+
+x8489_94_pos <- subset(x8489_94, x8489_94$'activeSaving.x'>0 & x8489_94$'activeSaving.y'>0 )
+
+saving84_89_94_pos <-x8489_94_pos[c('activeSaving.x', 'activeSaving.y')]
+saving84_89_94_pos_sorted <- saving84_89_94_pos[order(saving84_89_94_pos$'activeSaving.x'),]
+
+plot(saving84_89_94_pos_sorted)
 
 #x <-merge(z84, z89, by='uniqueID', all=FALSE)
 #x <-subset(x, hhHead84==1 & hhHead89==1) 
@@ -819,5 +899,5 @@ x8489 <- merge( z84 , z89, by = c('uniqueID', 'one',
 #testf84f89 <- merge( f84, f89, by.x = 'v10400', by.y = 'v16605' )
 
 #rm(list = ls()); gc()
-
+rm(list=setdiff(ls(), c("familySameHead8489", "familySameHead8994")))
 #
