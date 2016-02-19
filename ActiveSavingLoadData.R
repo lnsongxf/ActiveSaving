@@ -92,7 +92,7 @@ ind.KeepVars <-
     'er33950',  	# 2007 longitudinal weight 
     'er34045',  	# 2009 longitudinal weight
     'er34154',  	# 2011 longitudinal weight
-    'er34268'  	# 2013 longitudinal weight
+    'er34268'  	  # 2013 longitudinal weight
   )
 
 # create a "skinny"	data.frame object that only contains the
@@ -180,7 +180,6 @@ w <- rename(w, c("er30001" = "1968IntNum",
 # remove the original data.frame object then free up memory
 rm( ind ) ; gc()
 
-
 # Describe which variables to keep from the family level (f) and wealth supplement files (w)
 # 1984
 f84.KeepVars <-
@@ -193,7 +192,10 @@ f84.KeepVars <-
     'v10020',   # mortgage debt
     'v10923',   # other assets
     'v10447',   # moved?
-    'v10018'    # house value
+    'v10018',   # house value
+    'v10418',   # number in family
+    'v11022',   # family income
+    'v10003'    # state
   )
 
 w84.KeepVars <-
@@ -216,7 +218,10 @@ f89.KeepVars <-
     'v16326',   # mortage debt
     'v17332',   # other assets
     'v16649',   # moved?
-    'v16324'    # house value
+    'v16324',   # house value
+    'v16630',   # number in family
+    'v17533',   # family income
+    'v16303'    # state
     
   )
 w89.KeepVars <-
@@ -239,7 +244,9 @@ f94.KeepVars <-
     'er2037',   # mortgage debt
     'er3748',   # other assets
     'er2062',   # moved?
-    'er2033'    # house value
+    'er2033',   # house value
+    'er2006',   # number in family
+    'er4153'    # family income
     
   )
 w94.KeepVars <-
@@ -250,6 +257,7 @@ w94.KeepVars <-
     'S320',    # home equity
     'S317'     # imputed wealth with equity
   )
+
 
 # 1999
 f99.KeepVars <-
@@ -262,7 +270,10 @@ f99.KeepVars <-
     'er13047',   # mortgage debt
     'er15026',   # other assets
     'er13077',   # moved?
-    'er13041'    # house value
+    'er13041',   # house value
+    'er13009',   # number in family
+    'er16462',   # family income
+    'er13004'     # state
     
   )
 w99.KeepVars <-
@@ -285,7 +296,10 @@ f01.KeepVars <-
     'er17052',   # mortgage debt
     'er19222',   # other assets
     'er17088',   # moved?
-    'er17044'    # house value
+    'er17044',   # house value
+    'er17012',   # number in family
+    'er20456',   # family income
+    'er17004'    # state
     
   )
 w01.KeepVars <-
@@ -308,7 +322,10 @@ f03.KeepVars <-
     'er21051',   # mortgage debt 
     'er22617',   # other assets 
     'er21117',   # moved?
-    'er21043'    # house value
+    'er21043',   # house value
+    'er21016',   # number in family
+    'er24099',   # family income
+    'er21003'    # state
   )
 w03.KeepVars <-
   c(
@@ -330,7 +347,10 @@ f05.KeepVars <-
     'er25042',   # mortgage debt
     'er26598',   # other assets
     'er25098',   # moved?
-    'er25029'    # house value
+    'er25029',   # house value
+    'er25016',   # number in family
+    'er28037',   # family income
+    'er25003'    # state
     
   )
 w05.KeepVars <-
@@ -353,7 +373,10 @@ f07.KeepVars <-
     'er36042',   # mortgage debt
     'er37616',   # other assets
     'er36103',   # moved?
-    'er36029'    # house value
+    'er36029',   # house value
+    'er36016',   # number in family
+    'er41027',   # family income
+    'er36003'    # state
     
   )
 w07.KeepVars <-
@@ -380,7 +403,10 @@ f09.KeepVars <-
     'er42132',   # moved?
     'er43612',   # other debt
     'er42030',   # house value
-    'er46970'    # imputed wealth with equity
+    'er46970',   # imputed wealth with equity
+    'er42016',   # number in family
+    'er46935',   # family income
+    'er42003'    # state
     
   )
 # 2011
@@ -402,7 +428,10 @@ f11.KeepVars <-
     'er52380',   # medical debt
     'er52384',   # legal debt
     'er52376',   # loans from relatives 
-    'er52394'    # imputed wealth with equity
+    'er52394',   # imputed wealth with equity
+    'er47316',   # number in family
+    'er52343',   # family income
+    'er47303'    # state
     
   )
 # 2013
@@ -424,7 +453,10 @@ f13.KeepVars <-
     'er58193',   # medical debt
     'er58197',   # legal debt
     'er58189',   # loans from relatives
-    'er58211'    # imputed wealth with equity
+    'er58211',   # imputed wealth with equity
+    'er53016',   # number in family
+    'er58152',   # family income
+    'er53003'    # state
   )
 
 # extract data 
@@ -482,7 +514,6 @@ rm(f84.KeepVars, f89.KeepVars, f94.KeepVars, f99.KeepVars, f01.KeepVars,
    w84.KeepVars, w89.KeepVars, w94.KeepVars, w99.KeepVars, w01.KeepVars, w03.KeepVars,
    w05.KeepVars, w07.KeepVars, ind.KeepVars) ; gc()
 
-
 # rename remaining variables something useful
 z84 <- rename( z84, c('v10002' = 'intNum84',
                       'v10908' = 'farmBusiness84',
@@ -496,7 +527,10 @@ z84 <- rename( z84, c('v10002' = 'intNum84',
                       'S105' = 'checkingAccount84',
                       'S107'= 'othDebt84',
                       'S120'= 'homeEquity84',
-                      'S117'= 'impWealthWE84'))
+                      'S117'= 'impWealthWE84',
+                      'v10418' = 'numInFam',
+                      'v11022' = 'famIncome',
+                      'v10003' = 'state'))
 
 z89 <- rename( z89, c('v16302' = 'intNum89',
                       'v17323' = 'farmBusiness89',
@@ -510,7 +544,10 @@ z89 <- rename( z89, c('v16302' = 'intNum89',
                       'S205' = 'checkingAccount89',
                       'S207' = 'othDebt89',
                       'S220' = 'homeEquity89',
-                      'S217'= 'impWealthWE89'))
+                      'S217'= 'impWealthWE89',
+                      'v16630' = 'numInFam',
+                      'v17533' = 'famIncome',
+                      'v16303' = 'state'))
 
 z94 <- rename(z94, c('er2002' = 'intNum94',
                      'er3731' = 'farmBusiness94',
@@ -524,7 +561,10 @@ z94 <- rename(z94, c('er2002' = 'intNum94',
                      'S305' = 'checkingAccount94',
                      'S307' = 'othDebt94',
                      'S320' = 'homeEquity94',
-                     'S317'= 'impWealthWE94'))
+                     'S317'= 'impWealthWE94',
+                     'er2006' = 'numInFam',
+                     'er4153' = 'famIncome',
+                     'er4156' = 'state'))
 
 z99 <- rename( z99, c('er13002' = 'intNum99',
                       'er15002' = 'farmBusiness99',
@@ -538,7 +578,10 @@ z99 <- rename( z99, c('er13002' = 'intNum99',
                       'S405' = 'checkingAccount99',
                       'S407' = 'othDebt99',
                       'S420' = 'homeEquity99',
-                      'S417'= 'impWealthWE99'))
+                      'S417'= 'impWealthWE99',
+                      'er13009' = 'numInFam',
+                      'er16462' = 'famIncome',
+                      'er13004' = 'state'))
 
 z01 <- rename(z01, c('er17002' = 'intNum01', 
                      'er19198' = 'farmBusiness01',
@@ -552,7 +595,10 @@ z01 <- rename(z01, c('er17002' = 'intNum01',
                      'S505' = 'checkingAccount01',
                      'S507' = 'othDebt01',
                      'S520' = 'homeEquity01',
-                     'S517'= 'impWealthWE01'))
+                     'S517'= 'impWealthWE01',
+                     'er17012' = 'numInFam',
+                     'er20456' = 'famIncome',
+                     'er17004' = 'state'))
 
 z03 <- rename(z03, c('er21002' = 'intNum03',
                      'er22563' = 'farmBusiness03',
@@ -566,7 +612,10 @@ z03 <- rename(z03, c('er21002' = 'intNum03',
                      'S605' = 'checkingAccount03',
                      'S607' = 'othDebt03',
                      'S620' = 'homeEquity03',
-                     'S617'= 'impWealthWE03'))
+                     'S617'= 'impWealthWE03',
+                     'er21016' = 'numInFam',
+                     'er24099' = 'famIncome',
+                     'er21003' = 'state'))
 
 z05 <- rename( z05, c('er25002' = 'intNum05',
                       'er26544' = 'farmBusiness05',
@@ -580,7 +629,10 @@ z05 <- rename( z05, c('er25002' = 'intNum05',
                       'S705' = 'checkingAccount05',
                       'S707' = 'othDebt05',
                       'S720' = 'homeEquity05',
-                      'S717'= 'impWealthWE05'))
+                      'S717'= 'impWealthWE05',
+                      'er25016' = 'numInFam',
+                      'er28037' = 'famIncome',
+                      'v10003' = 'state'))
 
 z07 <- rename(z07, c('er36002' = 'intNum07',
                      'er37562' = 'farmBusiness07', 
@@ -594,7 +646,10 @@ z07 <- rename(z07, c('er36002' = 'intNum07',
                      'S805' = 'checkingAccount07',
                      'S807' = 'othDebt07',
                      'S820' = 'homeEquity07',
-                     'S817'= 'impWealthWE07'))
+                     'S817'= 'impWealthWE07',
+                     'er36016' = 'numInFam',
+                     'er41027' = 'famIncome',
+                     'er25003' = 'state'))
 
 z09 <- rename(z09, c('er42002' = 'intNum09',
                      'er43553' = 'farmBusiness09',
@@ -608,7 +663,10 @@ z09 <- rename(z09, c('er42002' = 'intNum09',
                      'er42132' = 'wtrmoved09',
                      'er43612' = 'othDebt09',
                      'er42030' = 'houseValue09',
-                     'er46970'= 'impWealthWE09'))
+                     'er46970'= 'impWealthWE09',
+                     'er42016' = 'numInFam',
+                     'er46935' = 'famIncome',
+                     'er42003' = 'state'))
 
 z11 <- rename(z11, c('er47302' = 'intNum11',
                      'er48878' = 'farmBusiness11',
@@ -626,7 +684,10 @@ z11 <- rename(z11, c('er47302' = 'intNum11',
                      'er52380' = 'medicalDebt11',
                      'er52384' = 'legalDebt11',
                      'er52376' = 'loansFromRelatives11',
-                     'er52394'= 'impWealthWE11'))
+                     'er52394'= 'impWealthWE11',
+                     'er47316' = 'numInFam',
+                     'er52343' = 'famIncome',
+                     'er47303' = 'state'))
 
 z13 <- rename( z13, c('er53002' = 'intNum13',
                       'er54625' = 'farmBusiness13',
@@ -644,8 +705,10 @@ z13 <- rename( z13, c('er53002' = 'intNum13',
                       'er58193' = 'medicalDebt13',
                       'er58197' = 'legalDebt13',
                       'er58189' = 'loansFromRelatives13',
-                      'er58211'= 'impWealthWE13'))
-
+                      'er58211'= 'impWealthWE13',
+                      'er53016' = 'numInFam',
+                      'er58152' = 'famIncome',
+                      'er53003' = 'state'))
 # create one debt variable for 2011 & 2013
 z11$othDebt11 = z11$cCardDebt11 + z11$studentDebt11 + z11$medicalDebt11 + z11$legalDebt11 + z11$loansFromRelatives11
 z13$othDebt13 = z13$cCardDebt13 + z13$studentDebt13 + z13$medicalDebt13 + z13$legalDebt13 + z13$loansFromRelatives13
