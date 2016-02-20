@@ -198,6 +198,7 @@ f84.KeepVars <-
     'v10003'    # state
   )
 
+
 w84.KeepVars <-
   c(
     'V10002',  # family interview number
@@ -246,7 +247,8 @@ f94.KeepVars <-
     'er2062',   # moved?
     'er2033',   # house value
     'er2006',   # number in family
-    'er4153'    # family income
+    'er4153',   # family income
+    'er4156'    # state
     
   )
 w94.KeepVars <-
@@ -353,6 +355,7 @@ f05.KeepVars <-
     'er25003'    # state
     
   )
+
 w05.KeepVars <-
   c(
     'ER25002', # family interview number
@@ -514,6 +517,8 @@ rm(f84.KeepVars, f89.KeepVars, f94.KeepVars, f99.KeepVars, f01.KeepVars,
    w84.KeepVars, w89.KeepVars, w94.KeepVars, w99.KeepVars, w01.KeepVars, w03.KeepVars,
    w05.KeepVars, w07.KeepVars, ind.KeepVars) ; gc()
 
+
+
 # rename remaining variables something useful
 z84 <- rename( z84, c('v10002' = 'intNum84',
                       'v10908' = 'farmBusiness84',
@@ -632,7 +637,7 @@ z05 <- rename( z05, c('er25002' = 'intNum05',
                       'S717'= 'impWealthWE05',
                       'er25016' = 'numInFam',
                       'er28037' = 'famIncome',
-                      'v10003' = 'state'))
+                      'er25003' = 'state'))
 
 z07 <- rename(z07, c('er36002' = 'intNum07',
                      'er37562' = 'farmBusiness07', 
@@ -649,7 +654,8 @@ z07 <- rename(z07, c('er36002' = 'intNum07',
                      'S817'= 'impWealthWE07',
                      'er36016' = 'numInFam',
                      'er41027' = 'famIncome',
-                     'er25003' = 'state'))
+                     'er36003' = 'state'))
+
 
 z09 <- rename(z09, c('er42002' = 'intNum09',
                      'er43553' = 'farmBusiness09',
