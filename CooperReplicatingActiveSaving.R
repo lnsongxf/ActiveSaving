@@ -8,7 +8,279 @@ library(survey)    # load survey package (analyzes complex design surveys)
 library(plyr)      # load package needed to use 'join_all'
 library(tidyr)     # load package needed to go from wide to long data
 
+#source("Parker.R")
 source("ActiveSavingLoadData.R")
+
+# merge two timepoints together,
+# by matching unique ID (and individual variables)
+mergeCriteria = c('uniqueID', 'one',
+                  'intNum84',  'intNum89',  'intNum94',  'intNum99',  'intNum01',
+                  'intNum03',  'intNum05',  'intNum07',  'intNum09',  'intNum11',
+                  'intNum13',
+                  '1968IntNum', '1968PersonNum', 'primarySamplingUnit', 'stratification',
+                  'sequenceNum84', 'sequenceNum89', 'sequenceNum94', 'sequenceNum99', 'sequenceNum01', 
+                  'sequenceNum03', 'sequenceNum05', 'sequenceNum07', 'sequenceNum09', 'sequenceNum11', 
+                  'sequenceNum13',
+                  'sex', 
+                  'empStatus84', 'empStatus89', 'empStatus94', 'empStatus99', 'empStatus01', 
+                  'empStatus03', 'empStatus05', 'empStatus07', 'empStatus09', 'empStatus11', 
+                  'empStatus13',
+                  'age84', 'age89', 'age94', 'age99', 'age01',
+                  'age03', 'age05', 'age07', 'age09', 'age11', 
+                  'age13',
+                  'hhRelStatus84', 'hhRelStatus89', 'hhRelStatus94', 'hhRelStatus99', 'hhRelStatus01', 
+                  'hhRelStatus03', 'hhRelStatus05', 'hhRelStatus07', 'hhRelStatus09', 'hhRelStatus11', 
+                  'hhRelStatus13',
+                  'currSchoolLev', 'highestSchoolLev',
+                  'longWeight84', 'longWeight89', 'longWeight94', 'longWeight99', 'longWeight01',
+                  'longWeight03', 'longWeight05', 'longWeight07', 'longWeight09', 'longWeight11',
+                  'longWeight13'
+)
+
+# 84 & 89
+x8489 <- merge( z84 , z89, by = mergeCriteria, all = FALSE )
+# 89 & 94
+x8994 <- merge( z89 , z94, by = mergeCriteria, all = FALSE )
+# 94 & 99
+x9499 <- merge( z94 , z99, by = mergeCriteria, all = FALSE )
+# 99 & 01
+x9901 <- merge( z99 , z01, by = mergeCriteria, all = FALSE )
+# 01 & 03
+x0103 <- merge( z01 , z03, by = mergeCriteria, all = FALSE )
+# 03 & 05
+x0305 <- merge( z03 , z05, by = mergeCriteria, all = FALSE )
+# 05 & 07
+x0507 <- merge( z05 , z07, by = mergeCriteria, all = FALSE )
+# 07 & 09
+x0709 <- merge( z07 , z09, by = mergeCriteria, all = FALSE )
+# 09 & 11
+x0911 <- merge( z09 , z11, by = mergeCriteria, all = FALSE )
+# 11 & 13
+x1113 <- merge( z11 , z13, by = mergeCriteria, all = FALSE )
+
+rm(mergeCriteria)
+
+# drop top and bottom 1%
+
+#x8489 <- subset(x8489, x8489$impActiveSaving<quantile(x8489$impActiveSaving, 0.99) & x8489$impActiveSaving>quantile(x8489$impActiveSaving, 0.01))
+#x8994 <- subset(x8994, x8994$impActiveSaving<quantile(x8994$impActiveSaving, 0.99) & x8994$impActiveSaving>quantile(x8994$impActiveSaving, 0.01))
+#x9499 <- subset(x9499, x9499$impActiveSaving<quantile(x9499$impActiveSaving, 0.99) & x9499$impActiveSaving>quantile(x9499$impActiveSaving, 0.01))
+#x0103 <- subset(x0103, x0103$impActiveSaving<quantile(x0103$impActiveSaving, 0.99) & x0103$impActiveSaving>quantile(x0103$impActiveSaving, 0.01))
+#x9901 <- subset(x9901, x9901$impActiveSaving<quantile(x9901$impActiveSaving, 0.99) & x9901$impActiveSaving>quantile(x9901$impActiveSaving, 0.01))
+#x0305 <- subset(x0305, x0305$impActiveSaving<quantile(x0305$impActiveSaving, 0.99) & x0305$impActiveSaving>quantile(x0305$impActiveSaving, 0.01))
+#x0507 <- subset(x0507, x0507$impActiveSaving<quantile(x0507$impActiveSaving, 0.99) & x0507$impActiveSaving>quantile(x0507$impActiveSaving, 0.01))
+#x0709 <- subset(x0709, x0709$impActiveSaving<quantile(x0709$impActiveSaving, 0.99) & x0709$impActiveSaving>quantile(x0709$impActiveSaving, 0.01))
+#x0911 <- subset(x0911, x0911$impActiveSaving<quantile(x0911$impActiveSaving, 0.99) & x0911$impActiveSaving>quantile(x0911$impActiveSaving, 0.01))
+#x1113 <- subset(x1113, x1113$impActiveSaving<quantile(x1113$impActiveSaving, 0.99) & x1113$impActiveSaving>quantile(x1113$impActiveSaving, 0.01))
+
+
+
+
+# restrict sample to being responsive in each year & nationally representative
+#x8489 <-subset(x8489, intNum84>0 & intNum89>0 & longWeight84>0 & longWeight89>0)
+#x8994 <-subset(x8994, intNum89>0 & intNum94>0 & longWeight89>0 & longWeight94>0)
+#x9499 <-subset(x9499, intNum94>0 & intNum99>0 & longWeight94>0 & longWeight99>0)
+#x9901 <-subset(x9901, intNum99>0 & intNum01>0 & longWeight99>0 & longWeight01>0)
+#x0103 <-subset(x0103, intNum01>0 & intNum03>0 & longWeight01>0 & longWeight03>0)
+#x0305 <-subset(x0305, intNum03>0 & intNum05>0 & longWeight03>0 & longWeight05>0)
+#x0507 <-subset(x0507, intNum05>0 & intNum07>0 & longWeight05>0 & longWeight07>0)
+#x0709 <-subset(x0709, intNum07>0 & intNum09>0 & longWeight07>0 & longWeight09>0)
+#x0911 <-subset(x0911, intNum09>0 & intNum11>0 & longWeight09>0 & longWeight11>0)
+#x1113 <-subset(x1113, intNum11>0 & intNum13>0 & longWeight11>0 & longWeight13>0)
+
+# restrict sample to being responsive in each year
+x8489 <-subset(x8489, intNum84>0 & intNum89>0)
+x8994 <-subset(x8994, intNum89>0 & intNum94>0)
+x9499 <-subset(x9499, intNum94>0 & intNum99>0)
+x9901 <-subset(x9901, intNum99>0 & intNum01>0)
+x0103 <-subset(x0103, intNum01>0 & intNum03>0)
+x0305 <-subset(x0305, intNum03>0 & intNum05>0)
+x0507 <-subset(x0507, intNum05>0 & intNum07>0)
+x0709 <-subset(x0709, intNum07>0 & intNum09>0)
+x0911 <-subset(x0911, intNum09>0 & intNum11>0)
+x1113 <-subset(x1113, intNum11>0 & intNum13>0)
+
+
+# # get rid of DK/refused/NA values - for the self-created wealth variable
+# x8489 <-subset(x8489, farmBusiness84<9999996 & farmBusiness89<9999996 
+#                & stocks84<9999996 & stocks89<9999996 
+#                & vehicles84<999997 & vehicles89<999997 
+#                & othAssets84<9999997 & othAssets89<9999997 
+#                & othRealEstate84<9999997) & othRealEstate89<9999997)
+# 
+# x8994 <-subset(x8994, farmBusiness89<9999996 & farmBusiness94<9999996 
+#                & stocks89<9999996 & stocks94<9999996 
+#                & vehicles89<999997 & vehicles94<999997 
+#                & othAssets89<9999997 & othAssets94<9999997
+#                & othRealEstate89<9999997) & othRealEstate94<9999997)
+# 
+# x9499 <-subset(x9499, farmBusiness94<9999996 & farmBusiness99<9999996 
+#                & stocks94<9999996 & stocks99<9999996 
+#                & vehicles94<999997 & vehicles99<999997 
+#                & othAssets94<9999997 & othAssets99<9999997
+#                & othRealEstate94<9999997) & othRealEstate99<9999997)
+# 
+# x0507 <-subset(x0507, farmBusiness05<9999996 & farmBusiness07<9999996 
+#                & stocks05<9999996 & stocks07<9999996 
+#                & vehicles05<999997 & vehicles07<999997 
+#                & othAssets05<9999997 & othAssets07<9999997
+#                & othRealEstate05<9999997) & othRealEstate07<9999997)
+# 
+# x0709 <-subset(x0709, farmBusiness07<9999996 & farmBusiness09<9999996 
+#                & stocks07<9999996 & stocks09<9999996 
+#                & vehicles07<999997 & vehicles09<999997 
+#                & othAssets07<9999997 & othAssets09<9999997
+#                & othRealEstate07<9999997) & othRealEstate09<9999997)
+# only keep those records whose head of household has not changed between waves
+# keep each record whose hhHead89's uniqueID = hhHead84's uniqueID
+
+# make a list of interview numbers in 1989 such that the household head
+# is the same as the household head in 1984. By interview number means
+# we retain all family records, not just those of the hh head.
+
+#84-89
+# familySameHead8489 <- c()
+# for(intNum in unique(x8489$'intNum89')){
+#   temp1 <- subset(x8489, x8489$'intNum89' ==  intNum & x8489$'hhHead89' == 1)
+#   if (dim(temp1)[1] != 1){
+#     next
+#   } else{
+#     if(temp1$'hhHead84'==1){
+#     familySameHead8489 <- c(familySameHead8489, intNum)
+#   }
+#   }
+# }
+# rm(temp1, intNum)
+# 
+# #89-94
+# familySameHead8994 <- c()
+# for(intNum in unique(x8994$'intNum94')){
+#   temp1 <- subset(x8994, x8994$'intNum94' ==  intNum & x8994$'hhHead94' == 1)
+#   if (dim(temp1)[1] != 1){
+#     next
+#   } else{
+#     if(temp1$'hhHead89'==1){
+#       familySameHead8994 <- c(familySameHead8994, intNum)
+#     }
+#   }
+# }
+# rm(temp1, intNum)
+# 
+# #94-99
+# familySameHead9499 <- c()
+# for(intNum in unique(x9499$'intNum99')){
+#    temp1 <- subset(x9499, x9499$'intNum99' ==  intNum & x9499$'hhHead99' == 1)
+#    if (dim(temp1)[1] != 1){
+#      next
+#    } else{
+#      if(temp1$'hhHead94'==1){
+#        familySameHead9499 <- c(familySameHead9499, intNum)
+#      }
+#    }
+#  }
+#  rm(temp1, intNum)
+
+#  #05-07
+#  familySameHead0507 <- c()
+#  for(intNum in unique(x0709$'intNum07')){
+#     temp1 <- subset(x0507, x0507$'intNum07' ==  intNum & x0507$'hhHead07' == 1)
+#     if (dim(temp1)[1] != 1){
+#       next
+#     } else{
+#       if(temp1$'hhHead05'==1){
+#         familySameHead0507 <- c(familySameHead0507, intNum)
+#       }
+#     }
+#   }
+#   rm(temp1, intNum)
+
+# restrict sample to having the same household head in adjacent years
+x8489 <- subset(x8489, x8489$hhHead84==1 & x8489$hhHead89==1 )
+x8994 <- subset(x8994, x8994$hhHead89==1 & x8994$hhHead94==1 )
+x9499 <- subset(x9499, x9499$hhHead94==1 & x9499$hhHead99==1 )
+x9901 <- subset(x9901, x9901$hhHead99==1 & x9901$hhHead01==1 )
+x0103 <- subset(x0103, x0103$hhHead01==1 & x0103$hhHead03==1 )
+x0305 <- subset(x0305, x0305$hhHead03==1 & x0305$hhHead05==1 )
+x0507 <- subset(x0507, x0507$hhHead05==1 & x0507$hhHead07==1 )
+x0709 <- subset(x0709, x0709$hhHead07==1 & x0709$hhHead09==1 )
+x0911 <- subset(x0911, x0911$hhHead09==1 & x0911$hhHead11==1 )
+x1113 <- subset(x1113, x1113$hhHead11==1 & x1113$hhHead13==1 )
+
+
+
+
+# save the familySameHead variables (because those for loops are slow as fuck - is there a better way??)
+#save(familySameHead8489, familySameHead8994, familySameHead9499, familySameHead0507, file = "familySameHeads.RData")
+
+# load( "familySameHeads.RData" )
+# x8489 <-subset(x8489, x8489$'intNum89' %in% familySameHead8489)
+# x8994 <-subset(x8994, x8994$'intNum94' %in% familySameHead8994)
+# x9499 <-subset(x9499, x9499$'intNum99' %in% familySameHead9499)
+# x0507 <-subset(x0507, x0507$'intNum07' %in% familySameHead0507)
+
+# calculate active saving
+
+# #if wtrMoved89 - I should do something if they moved - should I?
+# x8489$activeSaving <- x8489$'farmBusiness89' - x8489$'farmBusiness84' + 
+#   x8489$'checkingAccount89'- x8489$'checkingAccount84' + 
+#   x8489$'othRealEstate89' - x8489$'othRealEstate84' + 
+#   x8489$'stocks89' - x8489$'stocks84' + 
+#   x8489$'vehicles89' - x8489$'vehicles84' + 
+#   x8489$'othAssets89' - x8489$'othAssets84' - 
+#   (x8489$'othDebt89' - x8489$'othDebt84') + 
+#   x8489$'homeEquity89' - x8489$'homeEquity84'
+# 
+# x8994$activeSaving <- x8994$'farmBusiness94' - x8994$'farmBusiness89' + 
+#   x8994$'checkingAccount94'- x8994$'checkingAccount89' + 
+#   x8994$'othRealEstate94' - x8994$'othRealEstate89' + 
+#   x8994$'stocks94' - x8994$'stocks89' + 
+#   x8994$'vehicles94' - x8994$'vehicles89' + 
+#   x8994$'othAssets94' - x8994$'othAssets89' - 
+#   (x8994$'othDebt94' - x8994$'othDebt89') + 
+#   x8994$'homeEquity94' - x8994$'homeEquity89'
+# 
+# x9499$activeSaving <- x9499$'farmBusiness99' - x9499$'farmBusiness94' + 
+#   x9499$'checkingAccount99'- x9499$'checkingAccount94' + 
+#   x9499$'othRealEstate99' - x9499$'othRealEstate94' + 
+#   x9499$'stocks99' - x9499$'stocks94' + 
+#   x9499$'vehicles99' - x9499$'vehicles94' + 
+#   x9499$'othAssets99' - x9499$'othAssets94' - 
+#   (x9499$'othDebt99' - x9499$'othDebt94') + 
+#   x9499$'homeEquity99' - x9499$'homeEquity94'
+# 
+# x0507$activeSaving <- x0507$'farmBusiness07' - x0507$'farmBusiness05' + 
+#   x0507$'checkingAccount07'- x0507$'checkingAccount05' + 
+#   x0507$'othRealEstate07' - x0507$'othRealEstate05' + 
+#   x0507$'stocks07' - x0507$'stocks05' + 
+#   x0507$'vehicles07' - x0507$'vehicles05' + 
+#   x0507$'othAssets07' - x0507$'othAssets05' - 
+#   (x0507$'othDebt07' - x0507$'othDebt05') + 
+#   x0507$'homeEquity07' - x0507$'homeEquity05'
+
+
+# create an 'impActiveSaving' variable which is impWealth change year to year
+# get rid of NA values (some observations don't have savings data)
+x8489$impActiveSaving <-x8489$'impWealthWE89' - x8489$'impWealthWE84'
+x8489<-na.omit(x8489)
+x8994$impActiveSaving <-x8994$'impWealthWE94' - x8994$'impWealthWE89'
+x8994<-na.omit(x8994)
+x9499$impActiveSaving <-x9499$'impWealthWE99' - x9499$'impWealthWE94'
+x9499<-na.omit(x9499)
+x9901$impActiveSaving <-x9901$'impWealthWE01' - x9901$'impWealthWE99'
+x9901<-na.omit(x9901)
+x0103$impActiveSaving <-x0103$'impWealthWE03' - x0103$'impWealthWE01'
+x0103<-na.omit(x0103)
+x0305$impActiveSaving <-x0305$'impWealthWE05' - x0305$'impWealthWE03'
+x0305<-na.omit(x0305)
+x0507$impActiveSaving <-x0507$'impWealthWE07' - x0507$'impWealthWE05'
+x0507<-na.omit(x0507)
+x0709$impActiveSaving <-x0709$'impWealthWE09' - x0709$'impWealthWE07'
+x0709<-na.omit(x0709)
+x0911$impActiveSaving <-x0911$'impWealthWE11' - x0911$'impWealthWE09'
+x0911<-na.omit(x0911)
+x1113$impActiveSaving <-x1113$'impWealthWE13' - x1113$'impWealthWE11'
+x1113<-na.omit(x1113)
+
 
 
 # turn wide to long format for the survey weights
@@ -18,16 +290,11 @@ for(i in head(years, n=length(years)-1)){
     assign(paste("x",shortYeari,shortYearj,sep=""), 
            gather(eval(as.name(paste("x",shortYeari,shortYearj,sep=""))),
                   weightYear,weight,eval(as.name(paste("longWeight",shortYeari,sep=""))):longWeight13))
+    assign(paste("x",shortYeari,shortYearj,sep=""),subset(eval(as.name(paste("x",shortYeari, shortYearj, sep=''))),
+                                                          eval(as.name(paste("x",shortYeari, shortYearj, sep='')))$weightYear==paste('longWeight',shortYearj,sep='')))
 }
 rm(i,shortYeari,shortYearj)
 # sort dissavers to savers, limit to matching uniqueIDs, weight & plot
-#84-89, 89-94
-# x8489sorted <- subset(x8489,x8489$hhHead89==1)
-# x8994sorted <- subset(x8994,x8994$hhHead94==1)
-# x8489_94 <- merge(x8489sorted, x8994sorted, by='uniqueID', all=FALSE)
-# saving84_89_94 <-x8489_94[c('activeSaving.x', 'activeSaving.y')]
-# saving84_89_94_sorted <- saving84_89_94[order(saving84_89_94$'activeSaving.x'),]
-
 for(i in head(years, n=length(years)-2)){
   # three years
   shortYeari = substr(i,3,4)
@@ -35,14 +302,14 @@ for(i in head(years, n=length(years)-2)){
   shortYeark = substr(years[which(years == i)[[1]]+2],3,4)
   yearString = paste(shortYeari, "_", shortYearj,"_", shortYeark,sep="")
   # merge by unique id
-  assign(paste("x", yearString), 
+  assign(paste("x", yearString, sep=''), 
          merge(eval(as.name(paste("x",shortYeari,shortYearj,sep=""))),eval(as.name(paste("x",shortYearj,shortYeark,sep=""))),by='uniqueID', all=FALSE))
   # keep the variables needed
   assign(paste("saving",yearString,sep=""), 
-         eval(as.name(paste("x",yearString,sep="")))[c('impActiveSaving.x', 'impActiveSaving.y', 'weight.x', 'weightYear.x', 'primarySamplingUnit.y', 'stratification.y')])
+         eval(as.name(paste("x",yearString,sep="")))[c('impActiveSaving.x', 'impActiveSaving.y', 'weight.y', 'weightYear.y', 'primarySamplingUnit.y', 'stratification.y')])
   # keep only those associated with final year(in group) weight
   assign(paste("saving",yearString,sep=""),
-         subset(eval(as.name(paste("saving",yearString,sep=""))),eval(as.name(paste("saving",yearString,sep="")))$weightYear.x==paste('longWeight',shortYeark,sep='')))
+         subset(eval(as.name(paste("saving",yearString,sep=""))),eval(as.name(paste("saving",yearString,sep="")))$weightYear.y==paste('longWeight',shortYeark,sep='')))
   # sort dissavers to savers
   assign(paste("saving",yearString,"_sorted",sep=''), 
          eval(as.name(paste("saving",yearString,sep='')))[order(eval(as.name(paste("saving",yearString,sep="")))$impActiveSaving.x),])  
@@ -51,7 +318,7 @@ for(i in head(years, n=length(years)-2)){
     id=~primarySamplingUnit.y , 
     strata=~stratification.y , 
     data=eval(as.name(paste("x",yearString,sep=''))), 
-    weights=~weight.x, 
+    weights=~weight.y, 
     nest = TRUE ))
 }
 
@@ -64,266 +331,70 @@ for(i in head(years, n=length(years)-2)){
   shortYeark = substr(years[which(years == i)[[1]]+2],3,4)
   yearString = paste(shortYeari, "_", shortYearj,"_", shortYeark,sep="")
   #plot
-  svyplot(log(impActiveSaving.x)~log(impActiveSaving.y),design=eval(as.name(paste("y",yearString,sep=''))) , style="transparent",
-          pch=19,alpha=c(0,0.5), xlab=paste('Log active saving ', shortYeari, '-', shortYearj,sep=''),
-          ylab=paste('Log active saving ', shortYearj, '-', shortYeark,sep=''))
+#  svyplot(log(impActiveSaving.x)~log(impActiveSaving.y),design=eval(as.name(paste("y",yearString,sep=''))) , style="transparent",
+#          pch=19,alpha=c(0,0.5), xlab=paste('Log active saving ', shortYeari, '-', shortYearj,sep=''),
+#          ylab=paste('Log active saving ', shortYearj, '-', shortYeark,sep=''),cex=0.75)
+  svyplot(impActiveSaving.x~impActiveSaving.y,design=eval(as.name(paste("y",yearString,sep=''))) , style="transparent",
+          pch=19,alpha=c(0,0.5), xlab=paste('Active saving ', shortYeari, '-', shortYearj,sep=''),
+          ylab=paste('Active saving ', shortYearj, '-', shortYeark,sep=''))
 }
 
-assign(paste("x", shortYeari, "_", shortYearj,"_", shortYeark,sep=""), 
-       merge(eval(as.name(paste("x",shortYeari,shortYearj,sep=""))),eval(as.name(paste("x",shortYearj,shortYeark,sep=""))),by='uniqueID', all=FALSE))
-x84_89_94_t <- merge(x8489,x8994,by='uniqueID', all=FALSE)
-saving84_89_94 <-x84_89_94[c('impActiveSaving.x', 'impActiveSaving.y', 'weight', 'weightYear', 'primarySamplingUnit.y', 'stratification.y')]
-saving84_89_94 <- subset(saving84_89_94, saving84_89_94$weightYear=='longWeight89')
 
-saving84_89_94_sorted <-saving84_89_94[order(saving84_89_94$'impActiveSaving.x'),]
-saving84_89_94_sorted <- rename( saving84_89_94_sorted, c('impActiveSaving.x' = 'impActiveSaving8489',
-                      'impActiveSaving.y' = 'impActiveSaving8994'))
+#plotting the wealth distribution - logs
 
-#89-94, 94-99
-# x9499sorted <- subset(x9499,x9499$hhHead99==1)
-# x8994_99 <- merge(x8994sorted, x9499sorted, by='uniqueID', all=FALSE)
-# saving89_94_99 <-x8994_99[c('activeSaving.x', 'activeSaving.y')]
-# saving89_94_99_sorted <- saving89_94_99[order(saving89_94_99$'activeSaving.x'),]
-x89_94_99 <- merge(x8994, x9499, by='uniqueID', all=FALSE)
-saving89_94_99 <-x89_94_99[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving89_94_99_sorted <-saving89_94_99[order(saving89_94_99$'impActiveSaving.x'),]
-saving89_94_99_sorted <- rename( saving89_94_99_sorted, c('impActiveSaving.x' = 'impActiveSaving8994',
-                                                          'impActiveSaving.y' = 'impActiveSaving9499'))
+#create a survey design on the unlinked data
+for(i in head(years, n=length(years))){
+  shortYeari = substr(i,3,4)
+  #subset to postive wealth holdings
+  assign(paste("z",shortYeari,'pos',sep=''),subset(eval(as.name(paste("z",shortYeari,sep=''))),eval(as.name(paste("impWealthWE",shortYeari,sep='')))>0))
+  #survey design
+  assign(paste('wealth',shortYeari,sep=''), svydesign(id=~primarySamplingUnit, 
+                                                                  strat=~stratification, weights=~eval(as.name(paste("longWeight",shortYeari,sep=""))), 
+                                                                  data=eval(as.name(paste("z",shortYeari,"pos",sep=""))),
+                                                                  nest=TRUE))
+}
 
-#94-99, 99-01
-x94_99_01 <- merge(x9499, x9901, by='uniqueID', all=FALSE)
-saving94_99_01 <-x94_99_01[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving94_99_01_sorted <-saving94_99_01[order(saving94_99_01$'impActiveSaving.x'),]
-saving94_99_01_sorted <- rename( saving94_99_01_sorted, c('impActiveSaving.x' = 'impActiveSaving9499',
-                                                          'impActiveSaving.y' = 'impActiveSaving9901'))
-#99-01, 01-03
-x99_01_03 <- merge(x9901, x0103, by='uniqueID', all=FALSE)
-saving99_01_03 <-x99_01_03[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving99_01_03_sorted <-saving99_01_03[order(saving99_01_03$'impActiveSaving.x'),]
-saving99_01_03_sorted <- rename( saving99_01_03_sorted, c('impActiveSaving.x' = 'impActiveSaving9901',
-                                                          'impActiveSaving.y' = 'impActiveSaving0103'))
-#01-03, 03-05
-x01_03_05 <- merge(x0103, x0305, by='uniqueID', all=FALSE)
-saving01_03_05 <-x01_03_05[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving01_03_05_sorted <-saving01_03_05[order(saving01_03_05$'impActiveSaving.x'),]
-saving01_03_05_sorted <- rename( saving01_03_05_sorted, c('impActiveSaving.x' = 'impActiveSaving0103',
-                                                          'impActiveSaving.y' = 'impActiveSaving0305'))
-
-#03-05, 05-07
-x03_05_07 <- merge(x0305, x0507, by='uniqueID', all=FALSE)
-saving03_05_07 <-x03_05_07[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving03_05_07_sorted <- saving03_05_07[order(saving03_05_07$'impActiveSaving.x'),]
-saving03_05_07_sorted <- rename( saving03_05_07_sorted, c('impActiveSaving.x' = 'impActiveSaving0305',
-                                                          'impActiveSaving.y' = 'impActiveSaving0507'))
-
-#05-07, 07-09
-x05_07_09 <- merge(x0507, x0709, by='uniqueID', all=FALSE)
-saving05_07_09 <-x05_07_09[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving05_07_09_sorted <- saving05_07_09[order(saving05_07_09$'impActiveSaving.x'),]
-saving05_07_09_sorted <- rename( saving05_07_09_sorted, c('impActiveSaving.x' = 'impActiveSaving0507',
-                                                          'impActiveSaving.y' = 'impActiveSaving0709'))
-
-#07-09, 09-11
-x07_09_11 <- merge(x0709, x0911, by='uniqueID', all=FALSE)
-saving07_09_11 <-x07_09_11[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving07_09_11_sorted <- saving07_09_11[order(saving07_09_11$'impActiveSaving.x'),]
-saving07_09_11_sorted <- rename( saving07_09_11_sorted, c('impActiveSaving.x' = 'impActiveSaving0709',
-                                                          'impActiveSaving.y' = 'impActiveSaving0911'))
-
-#09-11, 11-13
-x09_11_13 <- merge(x0911, x1113, by='uniqueID', all=FALSE)
-saving09_11_13 <-x09_11_13[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving09_11_13_sorted <- saving09_11_13[order(saving09_11_13$'impActiveSaving.x'),]
-saving09_11_13_sorted <- rename( saving09_11_13_sorted, c('impActiveSaving.x' = 'impActiveSaving0911',
-                                                          'impActiveSaving.y' = 'impActiveSaving1113'))
-
-#weight
-y84_89_94 <- 
-  svydesign( 
-    ~primarySamplingUnit.y , 
-    strata = ~stratification.y , 
-    data = x84_89_94 , 
-    weights = ~weight , 
-    nest = TRUE 
-  )
-
-
-svyplot(log(impActiveSaving.x)~log(impActiveSaving.y),design=y84_89_94 , style="transparent",
-         pch=19,alpha=c(0,0.5) )
-#plot
-plot(saving84_89_94_sorted)
-plot(saving89_94_99_sorted)
-plot(saving94_99_01_sorted)
-plot(saving99_01_03_sorted)
-plot(saving01_03_05_sorted)
-plot(saving05_07_09_sorted)
-plot(saving07_09_11_sorted)
-plot(saving09_11_13_sorted)
-
-# plot only savers
-
-#84-89, 89-94
-# x8489_94_pos <- subset(x8489_94, x8489_94$'activeSaving.x'>0 & x8489_94$'activeSaving.y'>0 )
-# saving84_89_94_pos <-x8489_94_pos[c('activeSaving.x', 'activeSaving.y')]
-# saving84_89_94_pos_sorted <- saving84_89_94_pos[order(saving84_89_94_pos$'activeSaving.x'),]
-x84_89_94_pos <- subset(x84_89_94, x84_89_94$'impActiveSaving.x'>0 & x84_89_94$'impActiveSaving.y'>0 )
-saving84_89_94_pos <-x84_89_94_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving84_89_94_pos_sorted <- saving84_89_94_pos[order(saving84_89_94_pos$'impActiveSaving.x'),]
-saving84_89_94_pos_sorted <- rename( saving84_89_94_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving8489pos',
-                                                          'impActiveSaving.y' = 'impActiveSaving8994pos'))
-
-#89-94, 94-99
-x89_94_99_pos <- subset(x89_94_99, x89_94_99$'impActiveSaving.x'>0 & x89_94_99$'impActiveSaving.y'>0 )
-saving89_94_99_pos <-x89_94_99_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving89_94_99_pos_sorted <- saving89_94_99_pos[order(saving89_94_99_pos$'impActiveSaving.x'),]
-saving89_94_99_pos_sorted <- rename( saving89_94_99_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving8994pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving9499pos'))
-
-#94-99, 99-01
-x94_99_01_pos <- subset(x94_99_01, x94_99_01$'impActiveSaving.x'>0 & x94_99_01$'impActiveSaving.y'>0 )
-saving94_99_01_pos <-x94_99_01_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving94_99_01_pos_sorted <- saving94_99_01_pos[order(saving94_99_01_pos$'impActiveSaving.x'),]
-saving94_99_01_pos_sorted <- rename( saving94_99_01_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving9499pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving9901pos'))
-
-#99-01, 01-03
-x99_01_03_pos <- subset(x99_01_03, x99_01_03$'impActiveSaving.x'>0 & x99_01_03$'impActiveSaving.y'>0 )
-saving99_01_03_pos <-x99_01_03_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving99_01_03_pos_sorted <- saving99_01_03_pos[order(saving99_01_03_pos$'impActiveSaving.x'),]
-saving99_01_03_pos_sorted <- rename( saving99_01_03_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving9901pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving0103pos'))
-#01-03, 03-05
-x01_03_05_pos <- subset(x01_03_05, x01_03_05$'impActiveSaving.x'>0 & x01_03_05$'impActiveSaving.y'>0 )
-saving01_03_05_pos <-x01_03_05_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving01_03_05_pos_sorted <- saving01_03_05_pos[order(saving01_03_05_pos$'impActiveSaving.x'),]
-saving01_03_05_pos_sorted <- rename( saving01_03_05_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving0103pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving0305pos'))
-#03-05, 05-07
-x03_05_07_pos <- subset(x03_05_07, x03_05_07$'impActiveSaving.x'>0 & x03_05_07$'impActiveSaving.y'>0 )
-saving03_05_07_pos <-x03_05_07_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving03_05_07_pos_sorted <- saving03_05_07_pos[order(saving03_05_07_pos$'impActiveSaving.x'),]
-saving03_05_07_pos_sorted <- rename( saving03_05_07_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving0305pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving0507pos'))
-#05-07, 07-09
-x05_07_09_pos <- subset(x05_07_09, x05_07_09$'impActiveSaving.x'>0 & x05_07_09$'impActiveSaving.y'>0 )
-saving05_07_09_pos <-x05_07_09_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving05_07_09_pos_sorted <- saving05_07_09_pos[order(saving05_07_09_pos$'impActiveSaving.x'),]
-saving05_07_09_pos_sorted <- rename( saving05_07_09_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving0507pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving0709pos'))
-#07-09, 09-11
-x07_09_11_pos <- subset(x07_09_11, x07_09_11$'impActiveSaving.x'>0 & x07_09_11$'impActiveSaving.y'>0 )
-saving07_09_11_pos <-x07_09_11_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving07_09_11_pos_sorted <- saving07_09_11_pos[order(saving07_09_11_pos$'impActiveSaving.x'),]
-saving07_09_11_pos_sorted <- rename( saving07_09_11_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving0709pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving0911pos'))
-#07-09, 09-11
-x07_09_11_pos <- subset(x07_09_11, x07_09_11$'impActiveSaving.x'>0 & x07_09_11$'impActiveSaving.y'>0 )
-saving07_09_11_pos <-x07_09_11_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving07_09_11_pos_sorted <- saving07_09_11_pos[order(saving07_09_11_pos$'impActiveSaving.x'),]
-saving07_09_11_pos_sorted <- rename( saving07_09_11_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving0709pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving0911pos'))
-#09-11, 11-13
-x09_11_13_pos <- subset(x09_11_13, x09_11_13$'impActiveSaving.x'>0 & x09_11_13$'impActiveSaving.y'>0 )
-saving09_11_13_pos <-x09_11_13_pos[c('impActiveSaving.x', 'impActiveSaving.y')]
-saving09_11_13_pos_sorted <- saving09_11_13_pos[order(saving09_11_13_pos$'impActiveSaving.x'),]
-saving09_11_13_pos_sorted <- rename( saving09_11_13_pos_sorted, c('impActiveSaving.x' = 'impActiveSaving0911pos',
-                                                                  'impActiveSaving.y' = 'impActiveSaving1113pos'))
-#plot
+#plot the histogram
 par(mfrow = c(3, 3))
-plot(log(saving84_89_94_pos_sorted))
-mtext('84_89_94', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving89_94_99_pos_sorted))
-mtext('89_94_99', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving94_99_01_pos_sorted))
-mtext('94_99_01', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving99_01_03_pos_sorted))
-mtext('99_01_03', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving01_03_05_pos_sorted))
-mtext('01_03_05', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving03_05_07_pos_sorted))
-mtext('03_05_07', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving05_07_09_pos_sorted))
-mtext('05_07_09', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving07_09_11_pos_sorted))
-mtext('07_09_11', side = 3, line = -1, adj = 0.1, cex = 0.6)
-plot(log(saving09_11_13_pos_sorted))
-mtext('09_11_13', side = 3, line = -1, adj = 0.1, cex = 0.6)
+for(i in head(years, n=length(years))){
+  # two years
+  shortYeari = substr(i,3,4)
+  # histogram
+  svyhist(~log(eval(as.name(paste("impWealthWE",shortYeari,sep='')))),
+          subset(eval(as.name(paste("wealth",shortYeari,sep=''))),eval(as.name(paste("impWealthWE",shortYeari,sep='')))>0),
+          main="", col="grey80", xlab=paste("Log wealth",shortYeari), breaks=200, cex=0.75)
+  #lines(svysmooth(~log(eval(as.name(paste("impWealthWE",shortYeari,sep='')))), bandwidth=log(10), eval(as.name(paste("wealth",shortYeari,sep='')))),lwd=2)
+}
 
 
-#plotting the first sd of the distribution of active saving
+#plot the histogram - absolute value excluding the top and bottom 1%
 
-x84_89_dist <- subset(saving84_89_94$'impActiveSaving.x', saving84_89_94$'impActiveSaving.x'<sd(saving84_89_94$'impActiveSaving.x') & 
-                                                                                           saving84_89_94$'impActiveSaving.x'>(-1*sd(saving84_89_94$'impActiveSaving.x') ))
-x89_94_dist <- subset(saving84_89_94$'impActiveSaving.y', saving84_89_94$'impActiveSaving.y'<sd(saving84_89_94$'impActiveSaving.y') & 
-                        saving84_89_94$'impActiveSaving.y'>(-1*sd(saving84_89_94$'impActiveSaving.y') ))
-
-x94_99_dist <- subset(saving94_99_01$'impActiveSaving.x', saving94_99_01$'impActiveSaving.x'<sd(saving94_99_01$'impActiveSaving.x') & 
-                        saving94_99_01$'impActiveSaving.x'>(-1*sd(saving94_99_01$'impActiveSaving.x') ))
-x99_01_dist <- subset(saving94_99_01$'impActiveSaving.y', saving94_99_01$'impActiveSaving.y'<sd(saving94_99_01$'impActiveSaving.y') & 
-                        saving94_99_01$'impActiveSaving.y'>(-1*sd(saving94_99_01$'impActiveSaving.y') ))
-
-x01_03_dist <- subset(saving01_03_05$'impActiveSaving.x', saving01_03_05$'impActiveSaving.x'<sd(saving01_03_05$'impActiveSaving.x') & 
-                        saving01_03_05$'impActiveSaving.x'>(-1*sd(saving01_03_05$'impActiveSaving.x') ))
-x03_05_dist <- subset(saving01_03_05$'impActiveSaving.y', saving01_03_05$'impActiveSaving.y'<sd(saving01_03_05$'impActiveSaving.y') & 
-                        saving01_03_05$'impActiveSaving.y'>(-1*sd(saving01_03_05$'impActiveSaving.y') ))
-
-x05_07_dist <- subset(saving03_05_07$'impActiveSaving.x', saving03_05_07$'impActiveSaving.x'<sd(saving03_05_07$'impActiveSaving.x') & 
-                        saving03_05_07$'impActiveSaving.x'>(-1*sd(saving03_05_07$'impActiveSaving.x') ))
-x07_09_dist <- subset(saving03_05_07$'impActiveSaving.y', saving03_05_07$'impActiveSaving.y'<sd(saving03_05_07$'impActiveSaving.y') & 
-                        saving03_05_07$'impActiveSaving.y'>(-1*sd(saving03_05_07$'impActiveSaving.y') ))
-
-x09_11_dist <- subset(saving09_11_13$'impActiveSaving.x', saving09_11_13$'impActiveSaving.x'<sd(saving09_11_13$'impActiveSaving.x') & 
-                        saving09_11_13$'impActiveSaving.x'>(-1*sd(saving09_11_13$'impActiveSaving.x') ))
-x11_13_dist <- subset(saving09_11_13$'impActiveSaving.y', saving09_11_13$'impActiveSaving.y'<sd(saving09_11_13$'impActiveSaving.y') & 
-                        saving09_11_13$'impActiveSaving.y'>(-1*sd(saving09_11_13$'impActiveSaving.y') ))
+#create a survey design on the unlinked data
+for(i in head(years, n=length(years))){
+  shortYeari = substr(i,3,4)
+  #subset to non NA
+  assign(paste("z",shortYeari,'NA',sep=''),na.omit(eval(as.name(paste("z",shortYeari, sep='')))))
+  #survey design
+  assign(paste('wealth',shortYeari,sep=''), svydesign(id=~primarySamplingUnit, 
+                                                      strat=~stratification, weights=~eval(as.name(paste("longWeight",shortYeari,sep=""))), 
+                                                      data=eval(as.name(paste("z",shortYeari,"NA",sep=""))),
+                                                      nest=TRUE))
+}
 par(mfrow = c(3, 3))
-hist(x84_89_dist)
-hist(x89_94_dist)
-hist(x94_99_dist)
-hist(x99_01_dist)
-hist(x01_03_dist)
-hist(x03_05_dist)
-hist(x05_07_dist)
-hist(x07_09_dist)
-hist(x09_11_dist)
-hist(x11_13_dist)
-#normality test: null=normal
+for(i in head(years, n=length(years))){
+  # two years
+  shortYeari = substr(i,3,4)
+  # histogram
+  svyhist(~eval(as.name(paste("impWealthWE",shortYeari,sep=''))),
+          subset(eval(as.name(paste("wealth",shortYeari,sep=''))),
+                   eval(as.name(paste("impWealthWE",shortYeari,sep='')))<quantile(eval(as.name(paste("impWealthWE", shortYeari, sep=''))), 0.99) &
+                   eval(as.name(paste("impWealthWE",shortYeari,sep='')))>quantile(eval(as.name(paste("impWealthWE", shortYeari, sep=''))), 0.01)),
+          main="", col="grey80", xlab=paste("impWealthWE",shortYeari, 'ex top and bottom 1%'), breaks=100, cex=0.75)
+ 
+}
 
 
 
 
-# survey design
-wealth <-svydesign(id=~primarySamplingUnit, strat=~stratification, weights=~weight, data=x8489, nest=TRUE)
+# kernel regression of data without covariates
 
-
-#plotting the wealth distribution
-wealth84 <-x8489$'impWealthWE84'
-
-svyhist(~impWealthWE84,subset(wealth, weightYear=='longWeight84'),main="", col="grey80", xlab="Wealth 84", breaks=200)
-svyplot(iron~trnsfern,style="grayhex",dhanes,xlab="Transferrin",ylab="Iron",legend=2)
-      
-      svyhist(~BPXSAR, subset(nhanes,RIDAGEYR>20& BPXSAR>0),main="", col="grey80", xlab="Systolic BP (mmHg)")
-      lines(svysmooth(~BPXSAR, bandwidth=5, subset(nhanes,RIDAGEYR>20& BPXSAR>0)),lwd=2)
-#histogram
-hist(wealth84, breaks=200)
-#density estimate
-plot(density(wealth84),main="Density estimate of data")
-test <- subset(wealth84, wealth84>0)
-plot(density(test),main="Density estimate of data")
-# cdf estimate
-plot(ecdf(wealth84),main="Empirical cumulative distribution function")
-#standardise & normal q-q plot
-z<-(wealth84-mean(wealth84))/sd(wealth84) ## standardized data
-qqnorm(z) ## drawing the QQplot
-abline(0,1) ## drawing a 45-degree reference line
-
-#weibull q-q
-z.wei<-rweibull(n=5273,shape=3, scale=1) ## theorical quantiles from a Weibull population with known paramters shape=2 e scale=1
-qqplot(z.wei,z,main="QQ-plot distr. Weibull") ## QQ-plot
-abline(0,1) ## a 45-degree reference line is plotted
-
-
-
-
-
-shapiro.test(saving84_89_94$'impActiveSaving.x')
