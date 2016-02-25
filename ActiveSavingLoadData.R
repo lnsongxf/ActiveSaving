@@ -80,8 +80,17 @@ ind.KeepVars <-
     'er34003',  	# household relationship status, 2009
     'er34103',  	# household relationship status, 2011
     'er34203',  	# household relationship status, 2013
-    'er33222',		# current school level
-    'er33227',		# highest school level completed
+    'er30443',		# highest school level completed, 1984
+    'er30620',  	# highest school level completed, 1989
+    'er33115',  	# highest school level completed, 1994
+    'er33516',  	# highest school level completed, 1999
+    'er33616',  	# highest school level completed, 2001
+    'er33716',  	# highest school level completed, 2003
+    'er33817',  	# highest school level completed, 2005
+    'er33917',  	# highest school level completed, 2007
+    'er34020',  	# highest school level completed, 2009
+    'er34119',  	# highest school level completed, 2011
+    'er34230',  	# highest school level completed, 2013
     'er30462',    # 1984 longitudinal weight
     'er30641',    # 1989 longitudinal weight
     'er33119',		# 1994 longitudinal weight
@@ -94,6 +103,7 @@ ind.KeepVars <-
     'er34154',  	# 2011 longitudinal weight
     'er34268'  	  # 2013 longitudinal weight
   )
+
 
 # create a "skinny"	data.frame object that only contains the
 # columns you need for this analysis,
@@ -162,8 +172,17 @@ w <- rename(w, c("er30001" = "1968IntNum",
                  'er34003' = "hhRelStatus09",
                  'er34103' = "hhRelStatus11",
                  'er34203' = "hhRelStatus13",
-                 'er33222' = "currSchoolLev",
-                 'er33227' = "highestSchoolLev",
+                 'er30443' = "highestSchoolLev84",
+                 'er30620' = "highestSchoolLev89",
+                 'er33115' = "highestSchoolLev94",
+                 'er33516' = "highestSchoolLev99",
+                 'er33616' = "highestSchoolLev01",
+                 'er33716' = "highestSchoolLev03",
+                 'er33817' = "highestSchoolLev05",
+                 'er33917' = "highestSchoolLev07",
+                 'er34020' = "highestSchoolLev09",
+                 'er34119' = "highestSchoolLev11",
+                 'er34230' = "highestSchoolLev13",
                  'er30462' = "longWeight84",
                  'er30641' = "longWeight89",
                  'er33119' = "longWeight94",
@@ -527,7 +546,8 @@ for(i in years){
                                                                                                              eval(as.name(paste('sequenceNum', shortYearj, sep=''))),
                                                                                                              eval(as.name(paste('empStatus', shortYearj, sep=''))),
                                                                                                              eval(as.name(paste('age', shortYearj, sep=''))),
-                                                                                                             eval(as.name(paste('hhRelStatus', shortYearj, sep='')))
+                                                                                                             eval(as.name(paste('hhRelStatus', shortYearj, sep=''))),
+                                                                                                             eval(as.name(paste('highestSchoolLev', shortYearj, sep='')))
                                                                                                              ))) 
     } 
   }
