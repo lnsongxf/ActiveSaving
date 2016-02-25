@@ -13,16 +13,22 @@ source("ActiveSavingLoadData.R")
 
 # merge two timepoints together,
 # by matching unique ID 
+
+mergeCriteria = c('uniqueID', 'one', 'sex',
+                  '1968IntNum', '1968PersonNum', 'primarySamplingUnit', 'stratification',
+                  'longWeight84', 'longWeight89', 'longWeight94', 'longWeight99', 'longWeight01',
+                  'longWeight03', 'longWeight05', 'longWeight07', 'longWeight09', 'longWeight11',
+                  'longWeight13'
+)
+
 for(i in head(years, n=length(years)-1)){
   shortYeari = substr(i,3,4)
   shortYearj = substr(years[which(years == i)[[1]]+1],3,4)
   assign(paste("x",shortYeari, shortYearj, sep=''), merge(eval(as.name(paste("z",shortYeari, sep=''))), 
-                                                          eval(as.name(paste("z",shortYearj, sep=''))), by= 'uniqueID', all=FALSE))
+                                                          eval(as.name(paste("z",shortYearj, sep=''))), by= mergeCriteria, all=FALSE))
 }
 
-
-
-
+rm(mergeCriteria, shortYeari, shortYearj, i)
 # restrict sample to being responsive in each year
 x8489 <-subset(x8489, intNum84>0 & intNum89>0)
 x8994 <-subset(x8994, intNum89>0 & intNum94>0)
@@ -229,7 +235,7 @@ for(i in head(years, n=length(years)-1)){
     #                                                      eval(as.name(paste("x",shortYeari, shortYearj, sep='')))$weightYear==paste('longWeight',shortYearj,sep='')))
 }
 rm(i,shortYeari,shortYearj)
-# sort dissavers to savers, limit to matching uniqueIDs, weight & plot
+# sort dissavers to savers, limit to matching uniqueIDs, get rid of top & bottom 1%, weight & plot
 for(i in head(years, n=length(years)-2)){
   # three years
   shortYeari = substr(i,3,4)
@@ -245,17 +251,24 @@ for(i in head(years, n=length(years)-2)){
   # keep only those associated with final year(in group) weight
   assign(paste("saving",yearString,sep=""),
          subset(eval(as.name(paste("saving",yearString,sep=""))),eval(as.name(paste("saving",yearString,sep="")))$weightYear.y==paste('longWeight',shortYeark,sep='')))
+  # get rid of top and bottom 1%
+  assign(paste("saving",yearString,sep=""),subset(eval(as.name(paste("saving",yearString,sep=""))),
+         eval(as.name("impActiveSaving.x"))<quantile(eval(as.name("impActiveSaving.x")), 0.99) &
+           eval(as.name("impActiveSaving.x"))>quantile(eval(as.name("impActiveSaving.x")), 0.01) &
+           eval(as.name("impActiveSaving.y"))<quantile(eval(as.name("impActiveSaving.y")), 0.99) &
+           eval(as.name("impActiveSaving.y"))>quantile(eval(as.name("impActiveSaving.y")), 0.01)))
   # sort dissavers to savers
-  assign(paste("saving",yearString,"_sorted",sep=''), 
-         eval(as.name(paste("saving",yearString,sep='')))[order(eval(as.name(paste("saving",yearString,sep="")))$impActiveSaving.x),])  
+  #assign(paste("saving",yearString,"_sorted",sep=''), 
+  #       eval(as.name(paste("saving",yearString,sep='')))[order(eval(as.name(paste("saving",yearString,sep="")))$impActiveSaving.x),])  
   #weight
   assign(paste('y',yearString, sep=''), svydesign(
     id=~primarySamplingUnit.y , 
     strata=~stratification.y , 
-    data=eval(as.name(paste("x",yearString,sep=''))), 
+    data=eval(as.name(paste("saving",yearString,sep=''))), 
     weights=~weight.y, 
     nest = TRUE ))
 }
+rm(shortYeari, shortYearj, shortYeark,i, yearString)
 
 #plot
 par(mfrow = c(3, 3))
@@ -271,7 +284,7 @@ for(i in head(years, n=length(years)-2)){
 #          ylab=paste('Log active saving ', shortYearj, '-', shortYeark,sep=''),cex=0.75)
   svyplot(impActiveSaving.x~impActiveSaving.y,design=eval(as.name(paste("y",yearString,sep=''))) , style="transparent",
           pch=19,alpha=c(0,0.5), xlab=paste('Active saving ', shortYeari, '-', shortYearj,sep=''),
-          ylab=paste('Active saving ', shortYearj, '-', shortYeark,sep='', cex=0.75))
+          ylab=paste('Active saving ', shortYearj, '-', shortYeark,sep=''),cex=0.3)
 }
 
 
