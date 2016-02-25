@@ -12,81 +12,16 @@ library(tidyr)     # load package needed to go from wide to long data
 source("ActiveSavingLoadData.R")
 
 # merge two timepoints together,
-# by matching unique ID (and individual variables)
-mergeCriteria = c('uniqueID', 'one',
-                  'intNum84',  'intNum89',  'intNum94',  'intNum99',  'intNum01',
-                  'intNum03',  'intNum05',  'intNum07',  'intNum09',  'intNum11',
-                  'intNum13',
-                  '1968IntNum', '1968PersonNum', 'primarySamplingUnit', 'stratification',
-                  'sequenceNum84', 'sequenceNum89', 'sequenceNum94', 'sequenceNum99', 'sequenceNum01', 
-                  'sequenceNum03', 'sequenceNum05', 'sequenceNum07', 'sequenceNum09', 'sequenceNum11', 
-                  'sequenceNum13',
-                  'sex', 
-                  'empStatus84', 'empStatus89', 'empStatus94', 'empStatus99', 'empStatus01', 
-                  'empStatus03', 'empStatus05', 'empStatus07', 'empStatus09', 'empStatus11', 
-                  'empStatus13',
-                  'age84', 'age89', 'age94', 'age99', 'age01',
-                  'age03', 'age05', 'age07', 'age09', 'age11', 
-                  'age13',
-                  'hhRelStatus84', 'hhRelStatus89', 'hhRelStatus94', 'hhRelStatus99', 'hhRelStatus01', 
-                  'hhRelStatus03', 'hhRelStatus05', 'hhRelStatus07', 'hhRelStatus09', 'hhRelStatus11', 
-                  'hhRelStatus13',
-                  'currSchoolLev', 'highestSchoolLev',
-                  'longWeight84', 'longWeight89', 'longWeight94', 'longWeight99', 'longWeight01',
-                  'longWeight03', 'longWeight05', 'longWeight07', 'longWeight09', 'longWeight11',
-                  'longWeight13'
-)
-
-# 84 & 89
-x8489 <- merge( z84 , z89, by = mergeCriteria, all = FALSE )
-# 89 & 94
-x8994 <- merge( z89 , z94, by = mergeCriteria, all = FALSE )
-# 94 & 99
-x9499 <- merge( z94 , z99, by = mergeCriteria, all = FALSE )
-# 99 & 01
-x9901 <- merge( z99 , z01, by = mergeCriteria, all = FALSE )
-# 01 & 03
-x0103 <- merge( z01 , z03, by = mergeCriteria, all = FALSE )
-# 03 & 05
-x0305 <- merge( z03 , z05, by = mergeCriteria, all = FALSE )
-# 05 & 07
-x0507 <- merge( z05 , z07, by = mergeCriteria, all = FALSE )
-# 07 & 09
-x0709 <- merge( z07 , z09, by = mergeCriteria, all = FALSE )
-# 09 & 11
-x0911 <- merge( z09 , z11, by = mergeCriteria, all = FALSE )
-# 11 & 13
-x1113 <- merge( z11 , z13, by = mergeCriteria, all = FALSE )
-
-rm(mergeCriteria)
-
-# drop top and bottom 1%
-
-#x8489 <- subset(x8489, x8489$impActiveSaving<quantile(x8489$impActiveSaving, 0.99) & x8489$impActiveSaving>quantile(x8489$impActiveSaving, 0.01))
-#x8994 <- subset(x8994, x8994$impActiveSaving<quantile(x8994$impActiveSaving, 0.99) & x8994$impActiveSaving>quantile(x8994$impActiveSaving, 0.01))
-#x9499 <- subset(x9499, x9499$impActiveSaving<quantile(x9499$impActiveSaving, 0.99) & x9499$impActiveSaving>quantile(x9499$impActiveSaving, 0.01))
-#x0103 <- subset(x0103, x0103$impActiveSaving<quantile(x0103$impActiveSaving, 0.99) & x0103$impActiveSaving>quantile(x0103$impActiveSaving, 0.01))
-#x9901 <- subset(x9901, x9901$impActiveSaving<quantile(x9901$impActiveSaving, 0.99) & x9901$impActiveSaving>quantile(x9901$impActiveSaving, 0.01))
-#x0305 <- subset(x0305, x0305$impActiveSaving<quantile(x0305$impActiveSaving, 0.99) & x0305$impActiveSaving>quantile(x0305$impActiveSaving, 0.01))
-#x0507 <- subset(x0507, x0507$impActiveSaving<quantile(x0507$impActiveSaving, 0.99) & x0507$impActiveSaving>quantile(x0507$impActiveSaving, 0.01))
-#x0709 <- subset(x0709, x0709$impActiveSaving<quantile(x0709$impActiveSaving, 0.99) & x0709$impActiveSaving>quantile(x0709$impActiveSaving, 0.01))
-#x0911 <- subset(x0911, x0911$impActiveSaving<quantile(x0911$impActiveSaving, 0.99) & x0911$impActiveSaving>quantile(x0911$impActiveSaving, 0.01))
-#x1113 <- subset(x1113, x1113$impActiveSaving<quantile(x1113$impActiveSaving, 0.99) & x1113$impActiveSaving>quantile(x1113$impActiveSaving, 0.01))
+# by matching unique ID 
+for(i in head(years, n=length(years)-1)){
+  shortYeari = substr(i,3,4)
+  shortYearj = substr(years[which(years == i)[[1]]+1],3,4)
+  assign(paste("x",shortYeari, shortYearj, sep=''), merge(eval(as.name(paste("z",shortYeari, sep=''))), 
+                                                          eval(as.name(paste("z",shortYearj, sep=''))), by= 'uniqueID', all=FALSE))
+}
 
 
 
-
-# restrict sample to being responsive in each year & nationally representative
-#x8489 <-subset(x8489, intNum84>0 & intNum89>0 & longWeight84>0 & longWeight89>0)
-#x8994 <-subset(x8994, intNum89>0 & intNum94>0 & longWeight89>0 & longWeight94>0)
-#x9499 <-subset(x9499, intNum94>0 & intNum99>0 & longWeight94>0 & longWeight99>0)
-#x9901 <-subset(x9901, intNum99>0 & intNum01>0 & longWeight99>0 & longWeight01>0)
-#x0103 <-subset(x0103, intNum01>0 & intNum03>0 & longWeight01>0 & longWeight03>0)
-#x0305 <-subset(x0305, intNum03>0 & intNum05>0 & longWeight03>0 & longWeight05>0)
-#x0507 <-subset(x0507, intNum05>0 & intNum07>0 & longWeight05>0 & longWeight07>0)
-#x0709 <-subset(x0709, intNum07>0 & intNum09>0 & longWeight07>0 & longWeight09>0)
-#x0911 <-subset(x0911, intNum09>0 & intNum11>0 & longWeight09>0 & longWeight11>0)
-#x1113 <-subset(x1113, intNum11>0 & intNum13>0 & longWeight11>0 & longWeight13>0)
 
 # restrict sample to being responsive in each year
 x8489 <-subset(x8489, intNum84>0 & intNum89>0)
@@ -290,8 +225,8 @@ for(i in head(years, n=length(years)-1)){
     assign(paste("x",shortYeari,shortYearj,sep=""), 
            gather(eval(as.name(paste("x",shortYeari,shortYearj,sep=""))),
                   weightYear,weight,eval(as.name(paste("longWeight",shortYeari,sep=""))):longWeight13))
-    assign(paste("x",shortYeari,shortYearj,sep=""),subset(eval(as.name(paste("x",shortYeari, shortYearj, sep=''))),
-                                                          eval(as.name(paste("x",shortYeari, shortYearj, sep='')))$weightYear==paste('longWeight',shortYearj,sep='')))
+    #assign(paste("x",shortYeari,shortYearj,sep=""),subset(eval(as.name(paste("x",shortYeari, shortYearj, sep=''))),
+    #                                                      eval(as.name(paste("x",shortYeari, shortYearj, sep='')))$weightYear==paste('longWeight',shortYearj,sep='')))
 }
 rm(i,shortYeari,shortYearj)
 # sort dissavers to savers, limit to matching uniqueIDs, weight & plot
@@ -336,7 +271,7 @@ for(i in head(years, n=length(years)-2)){
 #          ylab=paste('Log active saving ', shortYearj, '-', shortYeark,sep=''),cex=0.75)
   svyplot(impActiveSaving.x~impActiveSaving.y,design=eval(as.name(paste("y",yearString,sep=''))) , style="transparent",
           pch=19,alpha=c(0,0.5), xlab=paste('Active saving ', shortYeari, '-', shortYearj,sep=''),
-          ylab=paste('Active saving ', shortYearj, '-', shortYeark,sep=''))
+          ylab=paste('Active saving ', shortYearj, '-', shortYeark,sep='', cex=0.75))
 }
 
 
