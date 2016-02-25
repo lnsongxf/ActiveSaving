@@ -716,7 +716,7 @@ z11 <- rename(z11, c('er47302' = 'intNum11',
                      'er52390' = 'homeEquity11',
                      'er48873' = 'vehicles11',
                      'er47348' = 'mortgageDebt11',
-                     'er48932' = 'otherAssets11',
+                     'er48932' = 'othAssets11',
                      'er47440' = 'wtrMoved11',
                      'er47330' = 'houseValue11',
                      'er52372' = 'cCardDebt11',
@@ -751,8 +751,8 @@ z13 <- rename( z13, c('er53002' = 'intNum13',
                       'er53003' = 'state13'))
 
 # create one debt variable for 2011 & 2013
-z11$othDebt11 = z11$cCardDebt11 + z11$studentDebt11 + z11$medicalDebt11 + z11$legalDebt11 + z11$loansFromRelatives11
-z13$othDebt13 = z13$cCardDebt13 + z13$studentDebt13 + z13$medicalDebt13 + z13$legalDebt13 + z13$loansFromRelatives13
+z11$othDebt11 <- z11$cCardDebt11 + z11$studentDebt11 + z11$medicalDebt11 + z11$legalDebt11 + z11$loansFromRelatives11
+z13$othDebt13 <- z13$cCardDebt13 + z13$studentDebt13 + z13$medicalDebt13 + z13$legalDebt13 + z13$loansFromRelatives13
 
 # drop other debt files
 z11 <- subset(z11, select = -c(cCardDebt11, studentDebt11, medicalDebt11, legalDebt11, loansFromRelatives11) )
@@ -825,5 +825,8 @@ z13$uniqueID <- (z13$'1968IntNum' * 1000) + z13$'1968PersonNum'
 
 rm(i,j, shortYeari, shortYearj)
 
-
-
+# remove NA wealth data
+for(i in years){
+  shortYear <- substr(i,3,4)
+  assign(paste("z",shortYear,sep=''), na.omit(eval(as.name(paste("z",shortYear,sep='')))))
+}
