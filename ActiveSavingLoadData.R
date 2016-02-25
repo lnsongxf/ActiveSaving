@@ -751,7 +751,7 @@ z13 <- rename( z13, c('er53002' = 'intNum13',
                       'er53003' = 'state13'))
 
 # create one debt variable for 2011 & 2013
-z11$othDebt = z11$cCardDebt11 + z11$studentDebt11 + z11$medicalDebt11 + z11$legalDebt11 + z11$loansFromRelatives11
+z11$othDebt11 = z11$cCardDebt11 + z11$studentDebt11 + z11$medicalDebt11 + z11$legalDebt11 + z11$loansFromRelatives11
 z13$othDebt13 = z13$cCardDebt13 + z13$studentDebt13 + z13$medicalDebt13 + z13$legalDebt13 + z13$loansFromRelatives13
 
 # drop other debt files
