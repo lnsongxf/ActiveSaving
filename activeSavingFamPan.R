@@ -189,16 +189,6 @@ w <- rename(w, c("er30001" = "1968IntNum",
 # remove the original data.frame object then free up memory
 rm( ind ) ; gc()
 
-# private annuities [89]V17340 [94]ER3758 [99]ER15036 [01]ER19232 [03]ER22627 [05]ER26608 [07]ER37626 [09]ER43617 [11]ER48962 [13]ER54724
-# real estate bought [89]V17346 [94]ER3774 [99]ER15052 [01]ER19248 [03]ER22643 [05]ER26624 [07]ER37642 [09]ER43633 [11]ER48978 [13]ER54740
-# invested in business/farm [89]V17355 [94]ER3788 [99]ER15066 [01]ER19262 [03]ER22657 [05]ER26638 [07]ER37656 [09]ER43647 [11]ER48992 [13]ER54754
-# improvements to real estate [89]V17352 [94]ER3784 [99]ER15062
-# stock purchases [89]V17365 [94]ER3805 [99]ER15083 [01]ER19279 [03]ER22674 [05]ER26655 [07]ER37673 [09]ER43664 [11]ER49009 [13]ER54764
-# assets removed by movers out [89]V17371 [94]ER3817 [99]ER15095 [01]ER19291 [03]ER22686 [05]ER26667 [07]ER37685 [09]ER43676 [11]ER49021 [13]ER54777
-# debts added by movers in [89]V17379 [94]ER3832 [99]ER15111 [01]ER19307 [03]ER22702 [05]ER26683 [07]ER37701 [09]ER43692 [11]ER49037 [13]ER54793
-# imp wealth w/o equity [84]S116 [89]S216 [94]S316 [99]S416 [01]S516 [03]S616 [05]S716 [07]S816 [09]ER46968 [11]ER52392 [13]ER58209
-# real estate equity [84]V10899 [89]V17318 [94]ER3722 [99]ER14993 [01]ER19189 [03]ER22554 [05]ER26535 [07]ER37553 [09]ER43544 [11]ER48869 ([13]ER58165-[13]ER58168) (asset-debt)
-# farm/business equity [84]V10908 [89]V17323 [94]ER3731 [99]ER15002 [01]ER19198 [03]ER22563 [05]ER26544 [07]ER37562 [09]ER43553 [11]ER48878
 
 # Describe which variables to keep from the family level (f) and wealth supplement files (w)
 # 1984
@@ -207,7 +197,6 @@ f84.KeepVars <-
     'v10002',   # family interview number
     'v10908',   # farm/business
     'v10913',   # stocks
-    'v10899',   # other real estate
     'v10903',   # vehicles
     'v10020',   # mortgage debt
     'v10923',   # other assets
@@ -216,8 +205,9 @@ f84.KeepVars <-
     'v10418',   # number in family
     'v11022',   # family income
     'v10003',   # state
-    'v11079'   # longitudinal weight
-  )
+    'v11079',   # longitudinal weight
+    'v10899'   # real estate equity
+    )
 
 
 w84.KeepVars <-
@@ -235,7 +225,6 @@ f89.KeepVars <-
     'v16302',   # family interview number
     'v17323',   # farm/business
     'v17326',   # stocks
-    'v17318',   # other real estate
     'v17320',   # vehicles
     'v16326',   # mortage debt
     'v17332',   # other assets
@@ -244,8 +233,22 @@ f89.KeepVars <-
     'v16630',   # number in family
     'v17533',   # family income
     'v16303',   # state
-    'v17612'   # longitudinal weight
-    
+    'v17612',   # longitudinal weight
+    'v17340',   # added to private annuities 
+    'v17346',   # real estate bought
+    'v17355',   # invested in farm/business 
+    'v17352',   # additions/repairs to real estate 
+    'v17365',   # stocks bought
+    'v17371',   # assets removed by movers out 
+    'v17379',   # debts added by movers in
+    'v17318',   # real estate equity 
+    'v17343',   # pensions/annuities cashed in
+    'v17349',   # real estate sold 
+    'v17358',   # farm/business sold
+    'v17368',   # stocks sold
+    'v17373',   # debts removed by movers out
+    'v17377',   # assets added by movers in
+    'v17384'   # inheritance recieved
   )
 
 w89.KeepVars <-
@@ -263,7 +266,6 @@ f94.KeepVars <-
     'er2002',   # family interview number
     'er3731',   # farm/business
     'er3736',   # stocks
-    'er3722',   # other real estate
     'er3726',   # vehicles 
     'er2037',   # mortgage debt
     'er3748',   # other assets
@@ -272,9 +274,26 @@ f94.KeepVars <-
     'er2006',   # number in family
     'er4153',   # family income
     'er4156',   # state
-    'er4160'   # longitudinal weight
-    
+    'er4160',   # longitudinal weight
+    'er3758',   # added to private annuities
+    'er3774',   # real estate bought
+    'er3788',   # invested in farm/business
+    'er3784',   # additions/repairs to real estate
+    'er3805',   # stocks bought 
+    'er3817',   # assets removed by movers out
+    'er3832',   # debts added by movers in
+    'er3722',   # real estate equity
+    'er3763',   # pensions/annuities cashed in
+    'er3779',   # real estate sold 
+    'er3793',   # farm/business sold
+    'er3811',   # stocks sold
+    'er3822',   # debts removed by movers out
+    'er3827',   # assets added by movers in
+    'er3838'   # inheritance recieved
   )
+    
+    
+  
 w94.KeepVars <-
   c(
     'ER2002',  # family interview number
@@ -291,7 +310,6 @@ f99.KeepVars <-
     'er13002',   # family interview number
     'er15002',   # farm/business
     'er15007',   # stocks
-    'er14993',   # other real estate
     'er14997',   # vehicles
     'er13047',   # mortgage debt
     'er15026',   # other assets
@@ -300,8 +318,22 @@ f99.KeepVars <-
     'er13009',   # number in family
     'er16462',   # family income
     'er13004',   # state
-    'er16518'   # longitudinal weight
-    
+    'er16518',   # longitudinal weight
+    'er15036',   # added to private annuities
+    'er15052',   # real estate bought
+    'er15066',   # invested in farm/business
+    'er15062',   # additions/repairs to real estate
+    'er15083',   # stocks bought
+    'er15095',   # assets removed by movers out
+    'er15111',   # debts added by movers in
+    'er14993',   # real estate equity
+    'er15041',   # pensions/annuities cashed in
+    'er15057',   # real estate sold 
+    'er15071',   # farm/business sold
+    'er15089',   # stocks sold
+    'er15100',   # debts removed by movers out 
+    'er15106',   # assets added by movers in
+    'er15117'   # inheritance received
   )
 w99.KeepVars <-
   c(
@@ -318,7 +350,6 @@ f01.KeepVars <-
     'er17002',   # family interview number 
     'er19198',   # farm/business
     'er19203',   # stocks
-    'er19189',   # other real estate
     'er19193',   # vehicles
     'er17052',   # mortgage debt
     'er19222',   # other assets
@@ -327,8 +358,22 @@ f01.KeepVars <-
     'er17012',   # number in family
     'er20456',   # family income
     'er17004',   # state
-    'er20394'   # longitudinal weight
-    
+    'er20394',   # longitudinal weight
+    'er19232',   # added to private annuities 
+    'er19248',   # real estate bought 
+    'er19262',   # invested in farm/business
+    'er19258',   # additions/repairs to real estate
+    'er19279',   # stocks bought 
+    'er19291',   # assets removed by movers out 
+    'er19307',   # debts added by movers in
+    'er19189',   # real estate equity
+    'er19237',   # pensions/annuities cashed in
+    'er19253',   # real estate sold
+    'er19267',   # farm/business sold
+    'er19285',   # stocks sold
+    'er19296',   # debt removed by movers out
+    'er19302',   # assets added by movers in
+    'er19313'   # inheritance received
   )
 w01.KeepVars <-
   c(
@@ -345,7 +390,6 @@ f03.KeepVars <-
     'er21002',   # family interview number
     'er22563',   # farm/business
     'er22568',   # stocks
-    'er22554',   # other real estate
     'er22558',   # vehicles
     'er21051',   # mortgage debt 
     'er22617',   # other assets 
@@ -354,7 +398,22 @@ f03.KeepVars <-
     'er21016',   # number in family
     'er24099',   # family income
     'er21003',   # state
-    'er24179'   # longitudinal weight
+    'er24179',   # longitudinal weight
+    'er22627',   # added to private annuities
+    'er22643',   # real estate bought
+    'er22657',   # invested in farm/business
+    'er22653',   # additions/repairs to real estate 
+    'er22674',   # stocks bought
+    'er22686',   # assets removed by movers out 
+    'er22702',   # debts added by movers in
+    'er22554',   # real estate equity 
+    'er22632',   # pensions/annuities cashed in
+    'er22648',   # real estate sold 
+    'er22662',   # farm/business sold
+    'er22680',   # stocks sold
+    'er22691',   # debts removed by movers out
+    'er22697',   # assets added by movers in
+    'er22708'   # inheritance received
   )
 w03.KeepVars <-
   c(
@@ -371,7 +430,6 @@ f05.KeepVars <-
     'er25002',   # family interview number
     'er26544',   # farm/business
     'er26549',   # stocks
-    'er26535',   # other real estate
     'er26539',   # vehicles
     'er25042',   # mortgage debt
     'er26598',   # other assets
@@ -380,8 +438,22 @@ f05.KeepVars <-
     'er25016',   # number in family
     'er28037',   # family income
     'er25003',   # state
-    'er28078'   # longitudinal weight
-    
+    'er28078',   # longitudinal weight
+    'er26608',   # added to private annuities
+    'er26624',   # real estate bought 
+    'er26638',   # invested in farm/business
+    'er26634',   # additions/repairs to real estate
+    'er26655',   # stocks bought
+    'er26667',   # assets removed by movers out
+    'er26683',   # debts added by movers in
+    'er26535',   # real estate equity
+    'er26613',   # pensions/annuities cashed in
+    'er26629',   # real estate sold
+    'er26643',   # farm/business sold
+    'er26661',   # stocks sold
+    'er26672',   # debts removed by movers out
+    'er26678',   # assets added by movers in
+    'er26689'   # inheritance received
   )
 
 w05.KeepVars <-
@@ -399,7 +471,6 @@ f07.KeepVars <-
     'er36002',   # family interview number
     'er37562',   # farm/business 
     'er37567',   # stocks
-    'er37553',   # other real estate
     'er37557',   # vehicles
     'er36042',   # mortgage debt
     'er37616',   # other assets
@@ -408,8 +479,22 @@ f07.KeepVars <-
     'er36016',   # number in family
     'er41027',   # family income
     'er36003',   # state
-    'er41069'   # longitudinal weight
-    
+    'er41069',   # longitudinal weight
+    'er37626',   # added to private annuities
+    'er37642',   # real estate bought 
+    'er37656',   # invested in farm/business 
+    'er37652',   # additions/repairs to real estate 
+    'er37673',   # stocks bought 
+    'er37685',   # assets removed by movers out
+    'er37701',   # debts added by movers in
+    'er37553',   # real estate equity
+    'er37631',   # pensions/annuities cashed in
+    'er37647',   # real estate sold
+    'er37661',   # farm/business sold
+    'er37679',   # stocks sold
+    'er37690',   # debts removed by movers out
+    'er37696',   # assets added by movers in
+    'er37707'   # inheritance received
   )
 w07.KeepVars <-
   c(
@@ -427,7 +512,6 @@ f09.KeepVars <-
     'er43553',   # farm/business
     'er46942',   # checking/savings
     'er43558',   # stocks
-    'er43544',   # other real estate 
     'er46966',   # home equity
     'er43548',   # vehicles
     'er42043',   # mortgage debt
@@ -439,8 +523,22 @@ f09.KeepVars <-
     'er42016',   # number in family
     'er46935',   # family income
     'er42003',   # state
-    'er47012'   # longitudinal weight
-    
+    'er47012',   # longitudinal weight
+    'er43617',   # added to private annuities
+    'er43633',   # real estate bought
+    'er43647',   # invested in farm/business
+    'er43643',   # additions/repairs to real estate
+    'er43664',   # stocks bought
+    'er43676',   # assets removed by movers out
+    'er43692',   # debts added by movers in
+    'er43544',   # real estate equity
+    'er43622',   # pensions/annuities cashed in
+    'er43638',   # real estate sold
+    'er43652',   # farm/business sold
+    'er43670',   # stocks sold
+    'er43681',   # debts removed by movers out
+    'er43687',   # assets added by movers in
+    'er43698'   # inheritance received
   )
 # 2011
 f11.KeepVars <-
@@ -449,7 +547,6 @@ f11.KeepVars <-
     'er48878',   # farm/business
     'er52350',   # checking/savings
     'er48883',   # stocks
-    'er48869',   # other real estate
     'er52390',   # home equity
     'er48873',   # vehicles
     'er47348',   # mortgage debt
@@ -465,8 +562,22 @@ f11.KeepVars <-
     'er47316',   # number in family
     'er52343',   # family income
     'er47303',   # state
-    'er52436'   # longitudinal weight
-    
+    'er52436',   # longitudinal weight
+    'er48962',   # added to private annuities 
+    'er48978',   # real estate bought 
+    'er48992',   # invested in farm/business
+    'er48988',   # additions/repairs to real estate 
+    'er49009',   # stocks bought  
+    'er49021',   # assets removed by movers out 
+    'er49037',   # debts added by movers in 
+    'er48869',   # real estate equity
+    'er48967',   # pensions/annuities cashed in 
+    'er48983',   # real estate sold
+    'er48997',   # farm/business sold
+    'er49015',   # stocks sold
+    'er49026',   # debts removed by movers out
+    'er49032',   # assets added by movers in
+    'er49043'   # inheritance received
   )
 # 2013
 f13.KeepVars <-
@@ -475,7 +586,6 @@ f13.KeepVars <-
     'er54625',   # farm/business
     'er58161',   # checking/savings
     'er54634',   # stocks
-    'er58165',   # other real estate
     'er58207',   # home equity
     'er54620',   # vehicles
     'er53048',   # mortgage debt
@@ -491,7 +601,23 @@ f13.KeepVars <-
     'er53016',   # number in family
     'er58152',   # family income
     'er53003',   # state
-    'er58257'   # longitudinal weight
+    'er58257',   # longitudinal weight
+    'er54724',   # added to private annuities
+    'er54740',   # real estate bought
+    'er54754',   # invested in farm/business
+    'er54750',   # additions/repairs to real estate
+    'er54764',   # stocks bought
+    'er54777',   # assets removed by movers out
+    'er54793',   # debts added by movers in
+    'er58165',   # real estate assets
+    'er58168',   # real estate debt (asset-debt = equity)
+    'er54729',   # pensions/anuities cashed in
+    'er54745',   # real estate sold
+    'er54759',   # farm/business sold
+    'er54770',   # stocks sold
+    'er54782',   # debts removed by movers out
+    'er54788',   # assets added by movers in 
+    'er54799'   # inheritance received
   )
 
 # extract data 
@@ -566,7 +692,6 @@ rm(f84.KeepVars, f89.KeepVars, f94.KeepVars, f99.KeepVars, f01.KeepVars,
 familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'v10908' = 'farmBusiness84',
                                       'v10913' = 'stocks84',
-                                      'v10899' = 'othRealEstate84',
                                       'v10903' = 'vehicles84',
                                       'v10020' = 'mortgageDebt84',
                                       'v10923' = 'othAssets84',
@@ -582,7 +707,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'v16302' = 'intNum89',
                                       'v17323' = 'farmBusiness89',
                                       'v17326' = 'stocks89',
-                                      'v17318' = 'othRealEstate89',
                                       'v17320' = 'vehicles89',
                                       'v16326' = 'mortgageDebt89',
                                       'v17332' = 'othAssets89',
@@ -598,7 +722,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er2002' = 'intNum94',
                                       'er3731' = 'farmBusiness94',
                                       'er3736' = 'stocks94',
-                                      'er3722' = 'othRealEstate94',
                                       'er3726' = 'vehicles94',
                                       'er2037' = 'mortgageDebt94',
                                       'er3748' = 'othAssets94',
@@ -614,7 +737,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er13002' = 'intNum99',
                                       'er15002' = 'farmBusiness99',
                                       'er15007' = 'stocks99',
-                                      'er14993' = 'othRealEstate99',
                                       'er14997' = 'vehicles99',
                                       'er13047' = 'mortgageDebt99',
                                       'er15026' = 'othAssets99',
@@ -630,7 +752,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er17002' = 'intNum01', 
                                       'er19198' = 'farmBusiness01',
                                       'er19203' = 'stocks01',
-                                      'er19189' = 'othRealEstate01',
                                       'er19193' = 'vehicles01',
                                       'er17052' = 'mortgageDebt01',
                                       'er19222' = 'othAssets01',
@@ -646,7 +767,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er21002' = 'intNum03',
                                       'er22563' = 'farmBusiness03',
                                       'er22568' = 'stocks03',
-                                      'er22554' = 'othRealEstate03',
                                       'er22558' = 'vehicles03',
                                       'er21051' = 'mortgageDebt03', 
                                       'er22617' = 'othAssets03', 
@@ -662,7 +782,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er25002' = 'intNum05',
                                       'er26544' = 'farmBusiness05',
                                       'er26549' = 'stocks05',
-                                      'er26535' = 'othRealEstate05',
                                       'er26539' = 'vehicles05',
                                       'er25042' = 'mortgageDebt05',
                                       'er26598' = 'othAssets05',
@@ -678,7 +797,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er36002' = 'intNum07',
                                       'er37562' = 'farmBusiness07', 
                                       'er37567' = 'stocks07',
-                                      'er37553' = 'othRealEstate07',
                                       'er37557' = 'vehicles07',
                                       'er36042' = 'mortgageDebt07',
                                       'er37616' = 'othAssets07',
@@ -695,7 +813,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er43553' = 'farmBusiness09',
                                       'er46942' = 'checkingAccount09',
                                       'er43558' = 'stocks09',
-                                      'er43544' = 'othRealEstate09', 
                                       'er46966' = 'homeEquity09',
                                       'er43548' = 'vehicles09',
                                       'er42043' = 'mortgageDebt09',
@@ -711,7 +828,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er48878' = 'farmBusiness11',
                                       'er52350' = 'checkingAccount11',
                                       'er48883' = 'stocks11',
-                                      'er48869' = 'othRealEstate11',
                                       'er52390' = 'homeEquity11',
                                       'er48873' = 'vehicles11',
                                       'er47348' = 'mortgageDebt11',
@@ -731,7 +847,6 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er54625' = 'farmBusiness13',
                                       'er58161' = 'checkingSavings13',
                                       'er54634' = 'stocks13',
-                                      'er58165' = 'othRealEstate13',
                                       'er58207' = 'homeEquity13',
                                       'er54620' = 'vehicles13',
                                       'er53048' = 'mortgageDebt13',
@@ -743,21 +858,174 @@ familyPanel <- rename( familyPanel, c('v10002' = 'intNum84',
                                       'er58193' = 'medicalDebt13',
                                       'er58197' = 'legalDebt13',
                                       'er58189' = 'loansFromRelatives13',
-                                      'er58211'= 'impWealthWE13',
+                                      'er58211' = 'impWealthWE13',
                                       'er53016' = 'numInFam13',
                                       'er58152' = 'famIncome13',
                                       'er53003' = 'state13',
-                                      'v11079'='longWeight84',
-                                      'v17612'='longWeight89',
-                                      'er4160'='longWeight94',
-                                      'er16518'='longWeight99',
-                                      'er20394'='longWeight01',
-                                      'er24179'='longWeight03',
-                                      'er28078'='longWeight05',
-                                      'er41069'='longWeight07',
-                                      'er47012'='longWeight09',
-                                      'er52436'='longWeight11',
-                                      'er58257'='longWeight13'))
+                                      'v11079' = 'longWeight84',
+                                      'v17612' = 'longWeight89',
+                                      'er4160' = 'longWeight94',
+                                      'er16518' = 'longWeight99',
+                                      'er20394' = 'longWeight01',
+                                      'er24179' = 'longWeight03',
+                                      'er28078' = 'longWeight05',
+                                      'er41069' = 'longWeight07',
+                                      'er47012' = 'longWeight09',
+                                      'er52436' = 'longWeight11',
+                                      'er58257' = 'longWeight13',
+                                      'v17340' =  'annuityAdd89',
+                                      'er3758' =  'annuityAdd94',
+                                      'er15036' =  'annuityAdd99',
+                                      'er19232' =  'annuityAdd01',
+                                      'er22627' =  'annuityAdd03',
+                                      'er26608' =  'annuityAdd05',
+                                      'er37626' =  'annuityAdd07',
+                                      'er43617' =  'annuityAdd09',
+                                      'er48962' =  'annuityAdd11',
+                                      'er54724' =  'annuityAdd13',
+                                      'v17346' = 'realEstateBought89',
+                                      'er3774' = 'realEstateBought94',
+                                      'er15052' = 'realEstateBought99',
+                                      'er19248' = 'realEstateBought01',
+                                      'er22643' = 'realEstateBought03',
+                                      'er26624' = 'realEstateBought05',
+                                      'er37642' = 'realEstateBought07',
+                                      'er43633' = 'realEstateBought09',
+                                      'er48978' = 'realEstateBought11', 
+                                      'er54740' = 'realEstateBought13',
+                                      'v17355' = 'investFarmBusiness89', 
+                                      'er3788' = 'investFarmBusiness94',
+                                      'er15066' = 'investFarmBusiness99',
+                                      'er19262' = 'investFarmBusiness01', 
+                                      'er22657' = 'investFarmBusiness03',
+                                      'er26638' = 'investFarmBusiness05',
+                                      'er37656' = 'investFarmBusiness07',
+                                      'er43647' = 'investFarmBusiness09',
+                                      'er48992' = 'investFarmBusiness11',
+                                      'er54754' = 'investFarmBusiness13',
+                                      'v17352' = 'realEstateImprovement89',
+                                      'er3784' = 'realEstateImprovement94',
+                                      'er15062' = 'realEstateImprovement99',
+                                      'er19258' = 'realEstateImprovement01',
+                                      'er22653' = 'realEstateImprovement03',
+                                      'er26634' = 'realEstateImprovement05',
+                                      'er37652' = 'realEstateImprovement07',
+                                      'er43643' = 'realEstateImprovement09',
+                                      'er48988' = 'realEstateImprovement11',
+                                      'er54750' = 'realEstateImprovement13',
+                                      'v17365' = 'stocksPurchased89',
+                                      'er3805' = 'stocksPurchased94',
+                                      'er15083' = 'stocksPurchased99',
+                                      'er19279' = 'stocksPurchased01',
+                                      'er22674' = 'stocksPurchased03',
+                                      'er26655' = 'stocksPurchased05',
+                                      'er37673' = 'stocksPurchased07',
+                                      'er43664' = 'stocksPurchased09',
+                                      'er49009' = 'stocksPurchased11',
+                                      'er54764' = 'stocksPurchased13',
+                                      'v17371' = 'assetsRemoved89',
+                                      'er3817' = 'assetsRemoved94',
+                                      'er15095' = 'assetsRemoved99',
+                                      'er19291' = 'assetsRemoved01',
+                                      'er22686' = 'assetsRemoved03',
+                                      'er26667' = 'assetsRemoved05',
+                                      'er37685' = 'assetsRemoved07',
+                                      'er43676' = 'assetsRemoved09',
+                                      'er49021' = 'assetsRemoved11',
+                                      'er54777' = 'assetsRemoved13',
+                                      'v17379'  = 'debtsAdded89',
+                                      'er3832'  = 'debtsAdded94',
+                                      'er15111' = 'debtsAdded99',
+                                      'er19307' = 'debtsAdded01',
+                                      'er22702' = 'debtsAdded03',
+                                      'er26683' = 'debtsAdded05',
+                                      'er37701' = 'debtsAdded07',
+                                      'er43692' = 'debtsAdded09',
+                                      'er49037' = 'debtsAdded11',
+                                      'er54793' = 'debtsAdded13',
+                                      'v10899'  = 'realEstateEquity84',
+                                      'v17318'  = 'realEstateEquity89',
+                                      'er3722'  = 'realEstateEquity94',
+                                      'er14993' = 'realEstateEquity99',
+                                      'er19189' = 'realEstateEquity01',
+                                      'er22554' = 'realEstateEquity03',
+                                      'er26535' = 'realEstateEquity05',
+                                      'er37553' = 'realEstateEquity07',
+                                      'er43544' = 'realEstateEquity09',
+                                      'er48869' = 'realEstateEquity11',
+                                      'er58165' = 'realEstateAssets13',
+                                      'er58168' = 'realEstateDebt13',
+                                      'v17343' = 'pensionsCashed89',
+                                      'er3763' = 'pensionsCashed94',
+                                      'er15041' = 'pensionsCashed99',
+                                      'er19237' = 'pensionsCashed01',
+                                      'er22632' = 'pensionsCashed03',
+                                      'er26613' = 'pensionsCashed05',
+                                      'er37631' = 'pensionsCashed07',
+                                      'er43622' = 'pensionsCashed09',
+                                      'er48967' = 'pensionsCashed11',
+                                      'er54729' = 'pensionsCashed13',
+                                      'v17349' = 'realEstateSold89',
+                                      'er3779' = 'realEstateSold94',
+                                      'er15057' = 'realEstateSold99',
+                                      'er19253' = 'realEstateSold01',
+                                      'er22648' = 'realEstateSold03',
+                                      'er26629' = 'realEstateSold05',
+                                      'er37647' = 'realEstateSold07',
+                                      'er43638' = 'realEstateSold09',
+                                      'er48983' = 'realEstateSold11',
+                                      'er54745' = 'realEstateSold13',
+                                      'v17358' = 'farmBusinessSold89',
+                                      'er3793' = 'farmBusinessSold94',
+                                      'er15071' = 'farmBusinessSold99',
+                                      'er19267' = 'farmBusinessSold01',
+                                      'er22662' = 'farmBusinessSold03',
+                                      'er26643' = 'farmBusinessSold05',
+                                      'er37661' = 'farmBusinessSold07',
+                                      'er43652' = 'farmBusinessSold09',
+                                      'er48997' = 'farmBusinessSold11',
+                                      'er54759' = 'farmBusinessSold13',
+                                      'v17368' = 'stocksSold89',
+                                      'er3811' = 'stocksSold94',
+                                      'er15089' = 'stocksSold99',
+                                      'er19285' = 'stocksSold01',
+                                      'er22680' = 'stocksSold03',
+                                      'er26661' = 'stocksSold05',
+                                      'er37679' = 'stocksSold07',
+                                      'er43670' = 'stocksSold09',
+                                      'er49015' = 'stocksSold11',
+                                      'er54770' = 'stocksSold13',
+                                      'v17373' = 'debtsRemoved89',
+                                      'er3822' = 'debtsRemoved94',
+                                      'er15100' = 'debtsRemoved99',
+                                      'er19296' = 'debtsRemoved01',
+                                      'er22691' = 'debtsRemoved03',
+                                      'er26672' = 'debtsRemoved05',
+                                      'er37690' = 'debtsRemoved07',
+                                      'er43681' = 'debtsRemoved09',
+                                      'er49026' = 'debtsRemoved11',
+                                      'er54782' = 'debtsRemoved13',
+                                      'v17377' = 'assetsAdded89',
+                                      'er3827' = 'assetsAdded94',
+                                      'er15106' = 'assetsAdded99',
+                                      'er19302' = 'assetsAdded01',
+                                      'er22697' = 'assetsAdded03',
+                                      'er26678' = 'assetsAdded05',
+                                      'er37696' = 'assetsAdded07',
+                                      'er43687' = 'assetsAdded09',
+                                      'er49032' = 'assetsAdded11',
+                                      'er54788' = 'assetsAdded13',
+                                      'v17384' = 'inheritanceReceived89',
+                                      'er3838' = 'inheritanceReceived94',
+                                      'er15117' = 'inheritanceReceived99',
+                                      'er19313' = 'inheritanceReceived01',
+                                      'er22708' = 'inheritanceReceived03',
+                                      'er26689' = 'inheritanceReceived05',
+                                      'er37707' = 'inheritanceReceived07',
+                                      'er43698' = 'inheritanceReceived09',
+                                      'er49043' = 'inheritanceReceived11',
+                                      'er54799' = 'inheritanceReceived13'                                 
+))
 
 
 # reorder column names alphabetically
