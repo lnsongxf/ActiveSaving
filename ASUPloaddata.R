@@ -568,7 +568,10 @@ for(i in years)
   } 
 }
 rm(i,years)
-
+rm(f84.KeepVars, f89.KeepVars, f94.KeepVars, f99.KeepVars, f01.KeepVars,
+   f03.KeepVars, f05.KeepVars, f07.KeepVars, f09.KeepVars, f11.KeepVars, f13.KeepVars,
+   w84.KeepVars, w89.KeepVars, w94.KeepVars, w99.KeepVars, w01.KeepVars, w03.KeepVars,
+   w05.KeepVars, w07.KeepVars, ind.KeepVars) ; gc()
 # merge the family and wealth supplement files
 # using the interview number field available in both tables (NB. the excel import is in upper case!)
 f84 <- merge( f84 , w84 , by.x = 'v10002', by.y = 'V10002')
@@ -1009,6 +1012,38 @@ w <- rename(w, c("er30001" = "1968IntNum",
                  'er34230' = "highestSchoolLev13"
 ))
 
+# cleaning up the wealth data - this is a real mess
+
+# get rid of NA/DK wealth data
+years <- c('89','94','99','01','03','05','07','09','11','13')
+# only a subset in '84
+f84 <- subset(f84, realEstateEquity84<9999998 & farmBusiness84<9999998 &
+                stocks84<9999998)
+# create 13 real estate equity variable
+f13$realEstateEquity13 <- f13$realEstateAssets13-f13$realEstateDebt13
+f13 <-subset(f13, select=-c(realEstateAssets13, realEstateDebt13))
+for(i in years){
+  assign(paste("f",i,sep=''), subset(eval(as.name(paste("f",i,sep=''))),
+         eval(as.symbol(paste("annuityAdd",i,sep='')))<9999998 &
+           eval(as.symbol(paste("realEstateBought",i,sep='')))<9999998 &
+           eval(as.symbol(paste("realEstateImprovement",i,sep='')))<9999998 &
+           eval(as.symbol(paste("investFarmBusiness",i,sep='')))<9999998 &
+           eval(as.symbol(paste("stocksPurchased",i,sep='')))<9999998 &
+           eval(as.symbol(paste("assetsRemoved",i,sep='')))<9999998 &
+           eval(as.symbol(paste("debtsAdded",i,sep='')))<9999998 &
+           eval(as.symbol(paste("realEstateEquity",i,sep='')))<9999998 &
+           eval(as.symbol(paste("farmBusiness",i,sep='')))<9999998 &
+           eval(as.symbol(paste("stocks",i,sep='')))<9999998 &
+           eval(as.symbol(paste("pensionsCashed",i,sep='')))<9999998 &
+           eval(as.symbol(paste("realEstateSold",i,sep='')))<9999998 &
+           eval(as.symbol(paste("farmBusinessSold",i,sep='')))<9999998 &
+           eval(as.symbol(paste("stocksSold",i,sep='')))<9999998 &
+           eval(as.symbol(paste("debtsRemoved",i,sep='')))<9999998 &
+           eval(as.symbol(paste("assetsAdded",i,sep='')))<9999998 &
+           eval(as.symbol(paste("inheritanceReceived",i,sep='')))<9999998))
+}
+rm(i)
+
 # create the unbalanced panel:
 
 # merge the family and individual-level files,
@@ -1017,9 +1052,11 @@ w <- rename(w, c("er30001" = "1968IntNum",
 years <- c('84','89','94','99','01','03','05','07','09','11','13')
 intNum <- c()
 sequenceNum <- c()
+hhRelStatus <- c() 
 for(i in years){
   intNum <- c(intNum, paste('intNum',i,sep=''))
   sequenceNum <- c(sequenceNum, paste('sequenceNum',i,sep=''))
+  hhRelStatus <- c(hhRelStatus, paste('hhRelStatus',i,sep=''))
 }
 j<-1
 for(i in years){
@@ -1027,7 +1064,12 @@ for(i in years){
          merge(eval(as.name(paste("f",i,sep=''))),w,
                by=intNum[j]))
   # keep heads only
-  assign(paste("f",i,sep=''), subset(eval(as.name(paste('f',i,sep=''))), eval(as.symbol(sequenceNum[j]))==01))
+  # To create a single year Head file: Select individuals with Relationship to Head of "Head"
+  # (a code value of 1 for 1968-1982; code 10 from 1983 onward) and with values for Sequence Number
+  # in the range 1-20.
+  assign(paste("f",i,sep=''), subset(eval(as.name(paste('f',i,sep=''))),
+                                       eval(as.symbol(sequenceNum[j]))<=20 &
+                                       eval(as.symbol(hhRelStatus[j]))==10))
   j <-j+1
 }
 
@@ -1098,10 +1140,14 @@ for(i in head(years, n=length(years)-1)){
 }
 
 wNoYear <- subset(w, select=c(eval(as.symbol('1968IntNum')), eval(as.symbol('1968PersonNum')), primarySamplingUnit, stratification,sex))
-w8489 <- subset(w, w$sequenceNum84==01 & w$sequenceNum89==01)
+w8489 <- subset(w, w$sequenceNum84==01 & w$sequenceNum89==01 &
+                  age84>0 & age84<999 & age89>0 & age89<999 &
+                  empStatus84!=0 & empStatus84!=9 & empStatus89!=0 & empStatus89!=9 &
+                  highestSchoolLev84!=99 & highestSchoolLev89!=99)
 w8489 <- subset(w8489, select=c(intNum84, intNum89, sequenceNum84, sequenceNum89,
                                 empStatus84, empStatus89,age84, age89,hhRelStatus84,hhRelStatus89,
                                 highestSchoolLev84, highestSchoolLev89))
+#################################################individual not NA
 fp8489 <- merge( f8489 , w8489 , by='intNum89')
 w8994 <- subset(w, w$sequenceNum89==01 & w$sequenceNum94==01)
 w8994 <- subset(w8994, select=c(intNum94, sequenceNum94,
@@ -1161,4 +1207,278 @@ familyPanel <- merge(familyPanel,fp0911, all=TRUE)
 familyPanel <- merge(familyPanel,fp1113, all=TRUE)
 wNoYear$uniqueID <- (wNoYear$'1968IntNum'*1000) + wNoYear$'1968PersonNum'
 familyPanel <- merge(familyPanel,wNoYear, by='uniqueID')
+
+
+# active saving (http://simba.isr.umich.edu/cb.aspx?vList=V17610)
+
+# 84-89
+familyPanel$activeSaving89 <- familyPanel$annuityAdd89 +
+  familyPanel$realEstateBought89 +
+  familyPanel$realEstateImprovement89 +
+  familyPanel$investFarmBusiness89 + 
+  familyPanel$stocksPurchased89 +
+  familyPanel$assetsRemoved89 +
+  familyPanel$debtsAdded89 +
+  familyPanel$impWealthWOE89 + 
+  familyPanel$realEstateEquity84 + 
+  familyPanel$farmBusiness84 + 
+  familyPanel$stocks84 - 
+  familyPanel$realEstateEquity89 -
+  familyPanel$farmBusiness89 - 
+  familyPanel$stocks89 - 
+  familyPanel$pensionsCashed89 -
+  familyPanel$realEstateSold89 -
+  familyPanel$farmBusinessSold89 -
+  familyPanel$stocksSold89 -
+  familyPanel$debtsRemoved89 -
+  familyPanel$assetsAdded89 -
+  familyPanel$inheritanceReceived89 -
+  familyPanel$impWealthWOE84
+
+#89-94
+familyPanel$activeSaving94 <- familyPanel$annuityAdd94 +
+  familyPanel$realEstateBought94 +
+  familyPanel$realEstateImprovement94 +
+  familyPanel$investFarmBusiness94 + 
+  familyPanel$stocksPurchased94 +
+  familyPanel$assetsRemoved94 +
+  familyPanel$debtsAdded94 +
+  familyPanel$impWealthWOE94 + 
+  familyPanel$realEstateEquity89 + 
+  familyPanel$farmBusiness89 + 
+  familyPanel$stocks89 - 
+  familyPanel$realEstateEquity94 -
+  familyPanel$farmBusiness94 - 
+  familyPanel$stocks94 - 
+  familyPanel$pensionsCashed94 -
+  familyPanel$realEstateSold94 -
+  familyPanel$farmBusinessSold94 -
+  familyPanel$stocksSold94 -
+  familyPanel$debtsRemoved94 -
+  familyPanel$assetsAdded94 -
+  familyPanel$inheritanceReceived94 -
+  familyPanel$impWealthWOE89
+
+#94-99
+familyPanel$activeSaving99 <- familyPanel$annuityAdd99 +
+  familyPanel$realEstateBought99 +
+  familyPanel$realEstateImprovement99 +
+  familyPanel$investFarmBusiness99 + 
+  familyPanel$stocksPurchased99 +
+  familyPanel$assetsRemoved99 +
+  familyPanel$debtsAdded99 +
+  familyPanel$impWealthWOE99 + 
+  familyPanel$realEstateEquity94 + 
+  familyPanel$farmBusiness94 + 
+  familyPanel$stocks94 - 
+  familyPanel$realEstateEquity99 -
+  familyPanel$farmBusiness99 - 
+  familyPanel$stocks99 - 
+  familyPanel$pensionsCashed99 -
+  familyPanel$realEstateSold99 -
+  familyPanel$farmBusinessSold99 -
+  familyPanel$stocksSold99 -
+  familyPanel$debtsRemoved99 -
+  familyPanel$assetsAdded99 -
+  familyPanel$inheritanceReceived99 -
+  familyPanel$impWealthWOE94
+
+#99-01
+familyPanel$activeSaving01 <- familyPanel$annuityAdd01 +
+  familyPanel$realEstateBought01 +
+  familyPanel$realEstateImprovement01 +
+  familyPanel$investFarmBusiness01 + 
+  familyPanel$stocksPurchased01 +
+  familyPanel$assetsRemoved01 +
+  familyPanel$debtsAdded01 +
+  familyPanel$impWealthWOE01 + 
+  familyPanel$realEstateEquity99 + 
+  familyPanel$farmBusiness99 + 
+  familyPanel$stocks99 - 
+  familyPanel$realEstateEquity01 -
+  familyPanel$farmBusiness01 - 
+  familyPanel$stocks01 - 
+  familyPanel$pensionsCashed01 -
+  familyPanel$realEstateSold01 -
+  familyPanel$farmBusinessSold01 -
+  familyPanel$stocksSold01 -
+  familyPanel$debtsRemoved01 -
+  familyPanel$assetsAdded01 -
+  familyPanel$inheritanceReceived01 -
+  familyPanel$impWealthWOE99
+
+#01-03
+familyPanel$activeSaving03 <- familyPanel$annuityAdd03 +
+  familyPanel$realEstateBought03 +
+  familyPanel$realEstateImprovement03 +
+  familyPanel$investFarmBusiness03 + 
+  familyPanel$stocksPurchased03 +
+  familyPanel$assetsRemoved03 +
+  familyPanel$debtsAdded03 +
+  familyPanel$impWealthWOE03 + 
+  familyPanel$realEstateEquity01 + 
+  familyPanel$farmBusiness01 + 
+  familyPanel$stocks01 - 
+  familyPanel$realEstateEquity03 -
+  familyPanel$farmBusiness03 - 
+  familyPanel$stocks03 - 
+  familyPanel$pensionsCashed03 -
+  familyPanel$realEstateSold03 -
+  familyPanel$farmBusinessSold03 -
+  familyPanel$stocksSold03 -
+  familyPanel$debtsRemoved03 -
+  familyPanel$assetsAdded03 -
+  familyPanel$inheritanceReceived03 -
+  familyPanel$impWealthWOE01
+
+#03-05
+familyPanel$activeSaving05 <- familyPanel$annuityAdd05 +
+  familyPanel$realEstateBought05 +
+  familyPanel$realEstateImprovement05 +
+  familyPanel$investFarmBusiness05 + 
+  familyPanel$stocksPurchased05 +
+  familyPanel$assetsRemoved05 +
+  familyPanel$debtsAdded05 +
+  familyPanel$impWealthWOE05 + 
+  familyPanel$realEstateEquity03 + 
+  familyPanel$farmBusiness03 + 
+  familyPanel$stocks03 - 
+  familyPanel$realEstateEquity05 -
+  familyPanel$farmBusiness05 - 
+  familyPanel$stocks05 - 
+  familyPanel$pensionsCashed05 -
+  familyPanel$realEstateSold05 -
+  familyPanel$farmBusinessSold05 -
+  familyPanel$stocksSold05 -
+  familyPanel$debtsRemoved05 -
+  familyPanel$assetsAdded05 -
+  familyPanel$inheritanceReceived05 -
+  familyPanel$impWealthWOE03
+
+#05-07
+familyPanel$activeSaving07 <- familyPanel$annuityAdd07 +
+  familyPanel$realEstateBought07 +
+  familyPanel$realEstateImprovement07 +
+  familyPanel$investFarmBusiness07 + 
+  familyPanel$stocksPurchased07 +
+  familyPanel$assetsRemoved07 +
+  familyPanel$debtsAdded07 +
+  familyPanel$impWealthWOE07 + 
+  familyPanel$realEstateEquity05 + 
+  familyPanel$farmBusiness05 + 
+  familyPanel$stocks05 - 
+  familyPanel$realEstateEquity07 -
+  familyPanel$farmBusiness07 - 
+  familyPanel$stocks07 - 
+  familyPanel$pensionsCashed07 -
+  familyPanel$realEstateSold07 -
+  familyPanel$farmBusinessSold07 -
+  familyPanel$stocksSold07 -
+  familyPanel$debtsRemoved07 -
+  familyPanel$assetsAdded07 -
+  familyPanel$inheritanceReceived07 -
+  familyPanel$impWealthWOE05
+
+#07-09
+familyPanel$activeSaving09 <- familyPanel$annuityAdd09 +
+  familyPanel$realEstateBought09 +
+  familyPanel$realEstateImprovement09 +
+  familyPanel$investFarmBusiness09 + 
+  familyPanel$stocksPurchased09 +
+  familyPanel$assetsRemoved09 +
+  familyPanel$debtsAdded09 +
+  familyPanel$impWealthWOE09 + 
+  familyPanel$realEstateEquity07 + 
+  familyPanel$farmBusiness07 + 
+  familyPanel$stocks07 - 
+  familyPanel$realEstateEquity09 -
+  familyPanel$farmBusiness09 - 
+  familyPanel$stocks09 - 
+  familyPanel$pensionsCashed09 -
+  familyPanel$realEstateSold09 -
+  familyPanel$farmBusinessSold09 -
+  familyPanel$stocksSold09 -
+  familyPanel$debtsRemoved09 -
+  familyPanel$assetsAdded09 -
+  familyPanel$inheritanceReceived09 -
+  familyPanel$impWealthWOE07
+
+#09-11
+familyPanel$activeSaving11 <- familyPanel$annuityAdd11 +
+  familyPanel$realEstateBought11 +
+  familyPanel$realEstateImprovement11 +
+  familyPanel$investFarmBusiness11 + 
+  familyPanel$stocksPurchased11 +
+  familyPanel$assetsRemoved11 +
+  familyPanel$debtsAdded11 +
+  familyPanel$impWealthWOE11 + 
+  familyPanel$realEstateEquity09 + 
+  familyPanel$farmBusiness09 + 
+  familyPanel$stocks09 - 
+  familyPanel$realEstateEquity11 -
+  familyPanel$farmBusiness11 - 
+  familyPanel$stocks11 - 
+  familyPanel$pensionsCashed11 -
+  familyPanel$realEstateSold11 -
+  familyPanel$farmBusinessSold11 -
+  familyPanel$stocksSold11 -
+  familyPanel$debtsRemoved11 -
+  familyPanel$assetsAdded11 -
+  familyPanel$inheritanceReceived11 -
+  familyPanel$impWealthWOE09
+
+#11-13
+familyPanel$activeSaving13 <- familyPanel$annuityAdd13 +
+  familyPanel$realEstateBought13 +
+  familyPanel$realEstateImprovement13 +
+  familyPanel$investFarmBusiness13 + 
+  familyPanel$stocksPurchased13 +
+  familyPanel$assetsRemoved13 +
+  familyPanel$debtsAdded13 + 
+  familyPanel$impWealthWOE13 + 
+  familyPanel$realEstateEquity11 + 
+  familyPanel$farmBusiness11 + 
+  familyPanel$stocks11 - 
+  (familyPanel$realEstateAssets13-familyPanel$realEstateDebt13) -
+  familyPanel$farmBusiness13 - 
+  familyPanel$stocks13 - 
+  familyPanel$pensionsCashed13 -
+  familyPanel$realEstateSold13 -
+  familyPanel$farmBusinessSold13 -
+  familyPanel$stocksSold13 -
+  familyPanel$debtsRemoved13 -
+  familyPanel$assetsAdded13 -
+  familyPanel$inheritanceReceived13 -
+  familyPanel$impWealthWOE11
+
+# drop all of the surplus wealth data
+
+
+familyPanel <- subset(familyPanel, select=c(uniqueID, stratification, primarySamplingUnit,
+                                            longWeight89, longWeight94, longWeight99, longWeight01,longWeight03,
+                                            longWeight05, longWeight07, longWeight09, longWeight11,longWeight13,
+                                            activeSaving89, activeSaving94, activeSaving99, activeSaving01,activeSaving03,
+                                            activeSaving05, activeSaving07, activeSaving09, activeSaving11,activeSaving13,
+                                            age89, age94, age99, age01,age03,
+                                            age05, age07, age09, age11,age13,
+                                            famIncome89, famIncome94, famIncome99, famIncome01,famIncome03,
+                                            famIncome05, famIncome07, famIncome09, famIncome11, famIncome13,
+                                            numInFam89, numInFam94, numInFam99, numInFam01, numInFam03,
+                                            numInFam05, numInFam07, numInFam09, numInFam11, numInFam13,
+                                            empStatus89, empStatus94, empStatus99, empStatus01, empStatus03,
+                                            empStatus05, empStatus07, empStatus09, empStatus11, empStatus13,
+                                            highestSchoolLev89, highestSchoolLev94, highestSchoolLev99, highestSchoolLev01, highestSchoolLev03,
+                                            highestSchoolLev05, highestSchoolLev07, highestSchoolLev09, highestSchoolLev11, highestSchoolLev13,
+                                            impWealthWOE89, impWealthWOE94, impWealthWOE99, impWealthWOE01, impWealthWOE03,
+                                            impWealthWOE05, impWealthWOE07, impWealthWOE09, impWealthWOE11, impWealthWOE13,
+                                            activeSaving
+                                            
+))
+
+
+# merge all of these files together
+familyPanel <- merge(fP_ID, fP_longWeight, by='uniqueID')
+familyPanel <-join_all(list(familyPanel,fP_activeSaving, fP_impWealthWOE,fP_age, fP_famIncome, fP_numInFam, fP_empStatus, fP_highestSchoolLev), by=c('uniqueID','year'), type='inner')
+
+rm(fP_impWealthWOE,fP_age, fP_famIncome, fP_numInFam, fP_empStatus, fP_highestSchoolLev, fP_ID, fP_longWeight, fP_activeSaving)
 
