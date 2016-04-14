@@ -9,7 +9,7 @@ library(plyr)      # load package needed to use 'join_all'
 library(tidyr)     # load package needed to go from wide to long data
 library(reshape2)  # load package needed to go from wide to long format
 library(np) # non parametric library
-
+library(xtable) # pretty latex tables
 
 # set R to produce conservative standard errors instead of crashing
 # http://r-survey.r-forge.r-project.org/survey/exmample-lonely.html
@@ -1018,7 +1018,7 @@ w <- rename(w, c("er30001" = "1968IntNum",
 years <- c('89','94','99','01','03','05','07','09','11','13')
 # only a subset in '84
 f84 <- subset(f84, realEstateEquity84<9999998 & farmBusiness84<9999998 &
-                stocks84<9999998)
+                stocks84<9999998 & impWealthWOE84<9999998)
 # create 13 real estate equity variable
 f13$realEstateEquity13 <- f13$realEstateAssets13-f13$realEstateDebt13
 f13 <-subset(f13, select=-c(realEstateAssets13, realEstateDebt13))
@@ -1031,6 +1031,7 @@ for(i in years){
            eval(as.symbol(paste("stocksPurchased",i,sep='')))<9999998 &
            eval(as.symbol(paste("assetsRemoved",i,sep='')))<9999998 &
            eval(as.symbol(paste("debtsAdded",i,sep='')))<9999998 &
+           eval(as.symbol(paste("impWealthWOE",i,sep='')))<9999998 &
            eval(as.symbol(paste("realEstateEquity",i,sep='')))<9999998 &
            eval(as.symbol(paste("farmBusiness",i,sep='')))<9999998 &
            eval(as.symbol(paste("stocks",i,sep='')))<9999998 &
@@ -1043,6 +1044,9 @@ for(i in years){
            eval(as.symbol(paste("inheritanceReceived",i,sep='')))<9999998))
 }
 rm(i)
+# PSID's active saving variable - drop NA
+f89 <- subset(f89, f89$activeSaving <9999998)
+
 
 # create the unbalanced panel:
 
@@ -1072,6 +1076,7 @@ for(i in years){
                                        eval(as.symbol(hhRelStatus[j]))==10))
   j <-j+1
 }
+rm(sequenceNum,intNum, hhRelStatus, i, j)
 
 # create a unique identifier variable for each individual
 f84$uniqueID <- (f84$'1968IntNum'*1000) + f84$'1968PersonNum'
@@ -1128,8 +1133,11 @@ f13<- subset(f13, select=-c(intNum84,intNum89,intNum94,intNum99,intNum01,
                             intNum03,intNum05,intNum07,intNum09,intNum11)) 
 
 
-
-
+# get rid of NA
+for(i in years){
+  assign(paste("f",i,sep=''), na.omit(eval(as.name(paste("f",i,sep='')))))
+}
+rm(i)
 
 # merge the family files from year to year by unique ID
 for(i in head(years, n=length(years)-1)){
@@ -1138,63 +1146,149 @@ for(i in head(years, n=length(years)-1)){
   assign(paste('f',i,j,sep=''),
          merge(eval(as.name(paste('f',i,sep=''))), eval(as.name(paste("f",j,sep=''))), by='uniqueID'))
 }
-
+rm(i,j)
+# yearless individual variables
 wNoYear <- subset(w, select=c(eval(as.symbol('1968IntNum')), eval(as.symbol('1968PersonNum')), primarySamplingUnit, stratification,sex))
-w8489 <- subset(w, w$sequenceNum84==01 & w$sequenceNum89==01 &
+
+# 84-89
+w8489 <- subset(w,sequenceNum84 <=20 & hhRelStatus84==10 &
+                  sequenceNum89 <=20 & hhRelStatus89==10 &
                   age84>0 & age84<999 & age89>0 & age89<999 &
                   empStatus84!=0 & empStatus84!=9 & empStatus89!=0 & empStatus89!=9 &
                   highestSchoolLev84!=99 & highestSchoolLev89!=99)
 w8489 <- subset(w8489, select=c(intNum84, intNum89, sequenceNum84, sequenceNum89,
                                 empStatus84, empStatus89,age84, age89,hhRelStatus84,hhRelStatus89,
                                 highestSchoolLev84, highestSchoolLev89))
-#################################################individual not NA
 fp8489 <- merge( f8489 , w8489 , by='intNum89')
-w8994 <- subset(w, w$sequenceNum89==01 & w$sequenceNum94==01)
+rm(w8489)
+# 89-94
+w8994 <- subset(w, sequenceNum89 <=20 & hhRelStatus89==10 &
+                  sequenceNum94 <=20 & hhRelStatus94==10 &
+                  age89>0 & age89<999 &
+                  age94>0 & age94<999 &
+                  empStatus89!=0 & empStatus89!=9 &
+                  empStatus94!=0 & empStatus94!=9 &
+                  highestSchoolLev89!=99 &
+                  highestSchoolLev94!=99)
 w8994 <- subset(w8994, select=c(intNum94, sequenceNum94,
                                 empStatus94,age94,hhRelStatus94,
                                 highestSchoolLev94))
 fp8994 <- merge( f8994 , w8994 , by='intNum94')
-w9499 <- subset(w, w$sequenceNum94==01 & w$sequenceNum99==01)
+rm(w8994)
+# 94-99
+w9499 <- subset(w,  sequenceNum94 <=20 & hhRelStatus94==10 &
+                  sequenceNum99 <=20 & hhRelStatus99==10 &
+                  age94>0 & age94<999 &
+                  age99>0 & age99<999 &
+                  empStatus94!=0 & empStatus94!=9 &
+                  empStatus99!=0 & empStatus99!=9 &
+                  highestSchoolLev94!=99 &
+                  highestSchoolLev99!=99)
 w9499 <- subset(w9499, select=c(intNum99, sequenceNum99,
                                 empStatus99,age99,hhRelStatus99,
                                 highestSchoolLev99))
 fp9499 <- merge( f9499 , w9499, by='intNum99')
-w9901 <- subset(w, w$sequenceNum99==01 & w$sequenceNum01==01)
+rm(w9499)
+# 99-01
+w9901 <- subset(w,  sequenceNum99 <=20 & hhRelStatus99==10 &
+                  sequenceNum01 <=20 & hhRelStatus01==10 &
+                  age99>0 & age99<999 &
+                  age01>0 & age01<999 &
+                  empStatus99!=0 & empStatus99!=9 &
+                  empStatus01!=0 & empStatus01!=9 &
+                  highestSchoolLev99!=99 &
+                  highestSchoolLev01!=99)
 w9901 <- subset(w9901, select=c(intNum01, sequenceNum01,
                                 empStatus01,age01,hhRelStatus01,
                                 highestSchoolLev01))
 fp9901 <- merge( f9901 , w9901 , by='intNum01')
-w0103 <- subset(w, w$sequenceNum01==01 & w$sequenceNum03==01)
+rm(w9901)
+# 01-03
+w0103 <- subset(w,  sequenceNum01 <=20 & hhRelStatus01==10 &
+                  sequenceNum03 <=20 & hhRelStatus03==10 &
+                  age01>0 & age01<999 &
+                  age03>0 & age03<999 &
+                  empStatus01!=0 & empStatus01!=9 &
+                  empStatus03!=0 & empStatus03!=9 &
+                  highestSchoolLev01!=99 &
+                  highestSchoolLev03!=99)
 w0103 <- subset(w0103, select=c(intNum03, sequenceNum03,
                                 empStatus03,age03,hhRelStatus03,
                                 highestSchoolLev03))
 fp0103 <- merge( f0103 , w0103 , by ='intNum03')
-w0305 <- subset(w, w$sequenceNum03==01 & w$sequenceNum05==01)
+rm(w0103)
+# 03-05
+w0305 <- subset(w,  sequenceNum03 <=20 & hhRelStatus03==10 &
+                  sequenceNum05 <=20 & hhRelStatus05==10 &
+                  age03>0 & age03<999 &
+                  age05>0 & age05<999 &
+                  empStatus03!=0 & empStatus03!=9 &
+                  empStatus05!=0 & empStatus05!=9 &
+                  highestSchoolLev03!=99 &
+                  highestSchoolLev05!=99)
 w0305 <- subset(w0305, select=c(intNum05, sequenceNum05,
                                 empStatus05,age05,hhRelStatus05,
                                 highestSchoolLev05))
 fp0305 <- merge( f0305 , w0305 , by='intNum05')
-w0507 <- subset(w, w$sequenceNum05==01 & w$sequenceNum07==01)
+rm(w0305)
+# 05-07
+w0507 <- subset(w,  sequenceNum05 <=20 & hhRelStatus05==10 &
+                  sequenceNum07 <=20 & hhRelStatus07==10 &
+                  age05>0 & age05<999 &
+                  age07>0 & age07<999 &
+                  empStatus05!=0 & empStatus05!=9 &
+                  empStatus07!=0 & empStatus07!=9 &
+                  highestSchoolLev05!=99 &
+                  highestSchoolLev07!=99)
 w0507 <- subset(w0507, select=c(intNum07, sequenceNum07,
                                 empStatus07,age07,hhRelStatus07,
                                 highestSchoolLev07))
 fp0507 <- merge( f0507 , w0507 , by='intNum07')
-w0709 <- subset(w, w$sequenceNum07==01 & w$sequenceNum09==01)
+rm(w0507)
+# 07-09
+w0709 <- subset(w, sequenceNum07 <=20 & hhRelStatus07==10 &
+                  sequenceNum09 <=20 & hhRelStatus09==10 &
+                  age07>0 & age07<999 &
+                  age09>0 & age09<999 &
+                  empStatus07!=0 & empStatus07!=9 &
+                  empStatus09!=0 & empStatus09!=9 &
+                  highestSchoolLev07!=99 &
+                  highestSchoolLev09!=99)
 w0709 <- subset(w0709, select=c(intNum09, sequenceNum09,
                                 empStatus09,age09,hhRelStatus09,
                                 highestSchoolLev09))
 fp0709 <- merge( f0709 , w0709 , by='intNum09')
-w0911 <- subset(w, w$sequenceNum09==01 & w$sequenceNum11==01)
+rm(w0709)
+
+# 09-11
+w0911 <- subset(w, sequenceNum09 <=20 & hhRelStatus09==10 &
+                  sequenceNum11 <=20 & hhRelStatus11==10 &
+                  age09>0 & age09<999 &
+                  age11>0 & age11<999 &
+                  empStatus09!=0 & empStatus09!=9 &
+                  empStatus11!=0 & empStatus11!=9 &
+                  highestSchoolLev09!=99 &
+                  highestSchoolLev11!=99)
 w0911 <- subset(w0911, select=c(intNum11, sequenceNum11,
                                 empStatus11,age11,hhRelStatus11,
                                 highestSchoolLev11))
 fp0911 <- merge( f0911 , w0911 , by='intNum11')
-w1113 <- subset(w, w$sequenceNum11==01 & w$sequenceNum13==01)
+rm(w0911)
+
+# 11-13
+w1113 <- subset(w, sequenceNum11 <=20 & hhRelStatus11==10 &
+                  sequenceNum13 <=20 & hhRelStatus13==10 &
+                  age11>0 & age11<999 &
+                  age13>0 & age13<999 &
+                  empStatus11!=0 & empStatus11!=9 &
+                  empStatus13!=0 & empStatus13!=9 &
+                  highestSchoolLev11!=99 &
+                  highestSchoolLev13!=99)
 w1113 <- subset(w1113, select=c(intNum13, sequenceNum13,
                                 empStatus13,age13,hhRelStatus13,
                                 highestSchoolLev13))
 fp1113 <- merge( f1113 , w1113 , by='intNum13')
-
+rm(w1113)
 
 familyPanel <- merge(fp8489,fp8994, all=TRUE)
 familyPanel <- merge(familyPanel,fp9499, all=TRUE)
@@ -1207,7 +1301,7 @@ familyPanel <- merge(familyPanel,fp0911, all=TRUE)
 familyPanel <- merge(familyPanel,fp1113, all=TRUE)
 wNoYear$uniqueID <- (wNoYear$'1968IntNum'*1000) + wNoYear$'1968PersonNum'
 familyPanel <- merge(familyPanel,wNoYear, by='uniqueID')
-
+rm(wNoYear,w)
 
 # active saving (http://simba.isr.umich.edu/cb.aspx?vList=V17610)
 
@@ -1439,7 +1533,7 @@ familyPanel$activeSaving13 <- familyPanel$annuityAdd13 +
   familyPanel$realEstateEquity11 + 
   familyPanel$farmBusiness11 + 
   familyPanel$stocks11 - 
-  (familyPanel$realEstateAssets13-familyPanel$realEstateDebt13) -
+  familyPanel$realEstateEquity13 -
   familyPanel$farmBusiness13 - 
   familyPanel$stocks13 - 
   familyPanel$pensionsCashed13 -
@@ -1475,10 +1569,453 @@ familyPanel <- subset(familyPanel, select=c(uniqueID, stratification, primarySam
                                             
 ))
 
+rm(f84, f89, f94, f99, f01, f03, f05, f07, f09, f11, f13,
+   f8489, f8994, f9499, f9901, f0103, f0305, f0507, f0709, f0911, f1113,
+   fp8489, fp8994, fp9499, fp9901, fp0103, fp0305, fp0507, fp0709, fp0911, fp1113)
+
+# wide to long format
+
+# unique ID and stratification ##################################################################################################################################################################
+fP_ID <- familyPanel[c('uniqueID','stratification','primarySamplingUnit' )]
+
+# activeSaving ##################################################################################################################################################################
+fP_activeSaving <- familyPanel[c('uniqueID',
+                                 'activeSaving89',
+                                 'activeSaving94',
+                                 'activeSaving99',
+                                 'activeSaving01',
+                                 'activeSaving03',
+                                 'activeSaving05',
+                                 'activeSaving07',
+                                 'activeSaving09',
+                                 'activeSaving11',
+                                 'activeSaving13' )]
+# Specify id.vars: the variables to keep but not split apart on
+fP_activeSaving <- melt(fP_activeSaving, id.vars=c("uniqueID"))
+fP_activeSaving$year <- ifelse(fP_activeSaving$variable=='activeSaving89',1989,
+                                ifelse(fP_activeSaving$variable=='activeSaving94',1994,
+                                       ifelse(fP_activeSaving$variable=='activeSaving99',1999,
+                                              ifelse(fP_activeSaving$variable=='activeSaving01',2001,
+                                                     ifelse(fP_activeSaving$variable=='activeSaving03',2003,
+                                                            ifelse(fP_activeSaving$variable=='activeSaving05',2005,
+                                                                   ifelse(fP_activeSaving$variable=='activeSaving07',2007,
+                                                                          ifelse(fP_activeSaving$variable=='activeSaving09',2009,
+                                                                                 ifelse(fP_activeSaving$variable=='activeSaving11',2011,2013)))))))))
+
+fP_activeSaving <- rename(fP_activeSaving, c('value' = 'activeSaving'))
+fP_activeSaving <-subset(fP_activeSaving,select=-c(variable))
+
+#PSID active saving
+fP_PSIDas <- familyPanel[c('uniqueID','activeSaving', 'longWeight89', 'stratification', 'primarySamplingUnit')]
+fP_PSIDas <- na.omit(fP_PSIDas)
+
+# long weights ##################################################################################################################################################################
+fP_longWeight <- familyPanel[c('uniqueID',
+                               'longWeight89',
+                               'longWeight94',
+                               'longWeight99',
+                               'longWeight01',
+                               'longWeight03',
+                               'longWeight05',
+                               'longWeight07',
+                               'longWeight09',
+                               'longWeight11',
+                               'longWeight13' )]
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_longWeight <- melt(fP_longWeight, id.vars=c("uniqueID"))
+fP_longWeight$year <- ifelse(fP_longWeight$variable=='longWeight89',1989,
+                             ifelse(fP_longWeight$variable=='longWeight94',1994,
+                                    ifelse(fP_longWeight$variable=='longWeight99',1999,
+                                           ifelse(fP_longWeight$variable=='longWeight01',2001,
+                                                  ifelse(fP_longWeight$variable=='longWeight03',2003,
+                                                         ifelse(fP_longWeight$variable=='longWeight05',2005,
+                                                                ifelse(fP_longWeight$variable=='longWeight07',2007,
+                                                                       ifelse(fP_longWeight$variable=='longWeight09',2009,
+                                                                              ifelse(fP_longWeight$variable=='longWeight11',2011,2013)))))))))
+
+fP_longWeight <- rename(fP_longWeight, c('value' = 'longWeight'))
+fP_longWeight <-subset(fP_longWeight,select=-c(variable))
+
+# impWealthWOE ##################################################################################################################################################################
+fP_impWealthWOE <- familyPanel[c('uniqueID',
+                                 'impWealthWOE89',
+                                 'impWealthWOE94',
+                                 'impWealthWOE99',
+                                 'impWealthWOE01',
+                                 'impWealthWOE03',
+                                 'impWealthWOE05',
+                                 'impWealthWOE07',
+                                 'impWealthWOE09',
+                                 'impWealthWOE11',
+                                 'impWealthWOE13' )]
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_impWealthWOE <- melt(fP_impWealthWOE, id.vars=c("uniqueID"))
+fP_impWealthWOE$year <- ifelse(fP_impWealthWOE$variable=='impWealthWOE89',1989,
+                               ifelse(fP_impWealthWOE$variable=='impWealthWOE94',1994,
+                                      ifelse(fP_impWealthWOE$variable=='impWealthWOE99',1999,
+                                             ifelse(fP_impWealthWOE$variable=='impWealthWOE01',2001,
+                                                    ifelse(fP_impWealthWOE$variable=='impWealthWOE03',2003,
+                                                           ifelse(fP_impWealthWOE$variable=='impWealthWOE05',2005,
+                                                                  ifelse(fP_impWealthWOE$variable=='impWealthWOE07',2007,
+                                                                         ifelse(fP_impWealthWOE$variable=='impWealthWOE09',2009,
+                                                                                ifelse(fP_impWealthWOE$variable=='impWealthWOE11',2011,2013)))))))))
+
+fP_impWealthWOE <- rename(fP_impWealthWOE, c('value' = 'impWealthWOE'))
+fP_impWealthWOE <-subset(fP_impWealthWOE,select=-c(variable))
+
+
+# age ##################################################################################################################################################################
+fP_age <- familyPanel[c('uniqueID',
+                        'age89',
+                        'age94',
+                        'age99',
+                        'age01',
+                        'age03',
+                        'age05',
+                        'age07',
+                        'age09',
+                        'age11',
+                        'age13' )]
+
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_age <- melt(fP_age, id.vars=c("uniqueID"))
+fP_age$year <- ifelse(fP_age$variable=='age89',1989,
+                      ifelse(fP_age$variable=='age94',1994,
+                             ifelse(fP_age$variable=='age99',1999,
+                                    ifelse(fP_age$variable=='age01',2001,
+                                           ifelse(fP_age$variable=='age03',2003,
+                                                  ifelse(fP_age$variable=='age05',2005,
+                                                         ifelse(fP_age$variable=='age07',2007,
+                                                                ifelse(fP_age$variable=='age09',2009,
+                                                                       ifelse(fP_age$variable=='age11',2011,2013)))))))))
+
+fP_age <- rename(fP_age, c('value' = 'age'))
+fP_age <-subset(fP_age,select=-c(variable))
+
+# family income ##################################################################################################################################################################
+fP_famIncome <- familyPanel[c('uniqueID',
+                              'famIncome89',
+                              'famIncome94',
+                              'famIncome99',
+                              'famIncome01',
+                              'famIncome03',
+                              'famIncome05',
+                              'famIncome07',
+                              'famIncome09',
+                              'famIncome11',
+                              'famIncome13' )]
+
+
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_famIncome <- melt(fP_famIncome, id.vars=c("uniqueID"))
+fP_famIncome$year <- ifelse(fP_famIncome$variable=='famIncome89',1989,
+                            ifelse(fP_famIncome$variable=='famIncome94',1994,
+                                   ifelse(fP_famIncome$variable=='famIncome99',1999,
+                                          ifelse(fP_famIncome$variable=='famIncome01',2001,
+                                                 ifelse(fP_famIncome$variable=='famIncome03',2003,
+                                                        ifelse(fP_famIncome$variable=='famIncome05',2005,
+                                                               ifelse(fP_famIncome$variable=='famIncome07',2007,
+                                                                      ifelse(fP_famIncome$variable=='famIncome09',2009,
+                                                                             ifelse(fP_famIncome$variable=='famIncome11',2011,2013)))))))))
+
+fP_famIncome <- rename(fP_famIncome, c('value' = 'famIncome'))
+fP_famIncome <-subset(fP_famIncome,select=-c(variable))
+
+
+# number in family ##################################################################################################################################################################
+fP_numInFam <- familyPanel[c('uniqueID',
+                             'numInFam89',
+                             'numInFam94',
+                             'numInFam99',
+                             'numInFam01',
+                             'numInFam03',
+                             'numInFam05',
+                             'numInFam07',
+                             'numInFam09',
+                             'numInFam11',
+                             'numInFam13' )]
+
+
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_numInFam <- melt(fP_numInFam, id.vars=c("uniqueID"))
+fP_numInFam$year <- ifelse(fP_numInFam$variable=='numInFam89',1989,
+                           ifelse(fP_numInFam$variable=='numInFam94',1994,
+                                  ifelse(fP_numInFam$variable=='numInFam99',1999,
+                                         ifelse(fP_numInFam$variable=='numInFam01',2001,
+                                                ifelse(fP_numInFam$variable=='numInFam03',2003,
+                                                       ifelse(fP_numInFam$variable=='numInFam05',2005,
+                                                              ifelse(fP_numInFam$variable=='numInFam07',2007,
+                                                                     ifelse(fP_numInFam$variable=='numInFam09',2009,
+                                                                            ifelse(fP_numInFam$variable=='numInFam11',2011,2013)))))))))
+
+fP_numInFam <- rename(fP_numInFam, c('value' = 'numInFam'))
+fP_numInFam <-subset(fP_numInFam,select=-c(variable))
+
+# employment status ##################################################################################################################################################################
+fP_empStatus <- familyPanel[c('uniqueID',
+                              'empStatus89',
+                              'empStatus94',
+                              'empStatus99',
+                              'empStatus01',
+                              'empStatus03',
+                              'empStatus05',
+                              'empStatus07',
+                              'empStatus09',
+                              'empStatus11',
+                              'empStatus13' )]
+
+
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_empStatus <- melt(fP_empStatus, id.vars=c("uniqueID"))
+fP_empStatus$year <- ifelse(fP_empStatus$variable=='empStatus89',1989,
+                            ifelse(fP_empStatus$variable=='empStatus94',1994,
+                                   ifelse(fP_empStatus$variable=='empStatus99',1999,
+                                          ifelse(fP_empStatus$variable=='empStatus01',2001,
+                                                 ifelse(fP_empStatus$variable=='empStatus03',2003,
+                                                        ifelse(fP_empStatus$variable=='empStatus05',2005,
+                                                               ifelse(fP_empStatus$variable=='empStatus07',2007,
+                                                                      ifelse(fP_empStatus$variable=='empStatus09',2009,
+                                                                             ifelse(fP_empStatus$variable=='empStatus11',2011,2013)))))))))
+
+fP_empStatus <- rename(fP_empStatus, c('value' = 'empStatus'))
+fP_empStatus <-subset(fP_empStatus,select=-c(variable))
+
+# highest school level reached ##################################################################################################################################################################
+fP_highestSchoolLev <- familyPanel[c('uniqueID',
+                                     'highestSchoolLev89',
+                                     'highestSchoolLev94',
+                                     'highestSchoolLev99',
+                                     'highestSchoolLev01',
+                                     'highestSchoolLev03',
+                                     'highestSchoolLev05',
+                                     'highestSchoolLev07',
+                                     'highestSchoolLev09',
+                                     'highestSchoolLev11',
+                                     'highestSchoolLev13' )]
+
+
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_highestSchoolLev <- melt(fP_highestSchoolLev, id.vars=c("uniqueID"))
+fP_highestSchoolLev$year <- ifelse(fP_highestSchoolLev$variable=='highestSchoolLev89',1989,
+                                   ifelse(fP_highestSchoolLev$variable=='highestSchoolLev94',1994,
+                                          ifelse(fP_highestSchoolLev$variable=='highestSchoolLev99',1999,
+                                                 ifelse(fP_highestSchoolLev$variable=='highestSchoolLev01',2001,
+                                                        ifelse(fP_highestSchoolLev$variable=='highestSchoolLev03',2003,
+                                                               ifelse(fP_highestSchoolLev$variable=='highestSchoolLev05',2005,
+                                                                      ifelse(fP_highestSchoolLev$variable=='highestSchoolLev07',2007,
+                                                                             ifelse(fP_highestSchoolLev$variable=='highestSchoolLev09',2009,
+                                                                                    ifelse(fP_highestSchoolLev$variable=='highestSchoolLev11',2011,2013)))))))))
+
+fP_highestSchoolLev <- rename(fP_highestSchoolLev, c('value' = 'highestSchoolLev'))
+fP_highestSchoolLev <-subset(fP_highestSchoolLev,select=-c(variable))
+
+
 
 # merge all of these files together
-familyPanel <- merge(fP_ID, fP_longWeight, by='uniqueID')
-familyPanel <-join_all(list(familyPanel,fP_activeSaving, fP_impWealthWOE,fP_age, fP_famIncome, fP_numInFam, fP_empStatus, fP_highestSchoolLev), by=c('uniqueID','year'), type='inner')
+#familyPanel <- merge(fP_ID, fP_longWeight, by='uniqueID')
+#familyPanel <-join_all(list(familyPanel,fP_activeSaving,fP_impWealthWOE,fP_age, fP_famIncome, fP_numInFam, fP_empStatus, fP_highestSchoolLev), by=c('uniqueID','year'), type='inner')
+#familyPanel <- na.omit(familyPanel)
+#save(familyPanel, file='famPanel.R')
+#load(file='famPanel.R')
+rm(fP_activeSaving, fP_age, fP_empStatus, fP_famIncome, fP_highestSchoolLev, fP_ID,
+   fP_impWealthWOE, fP_longWeight, fP_numInFam)
 
-rm(fP_impWealthWOE,fP_age, fP_famIncome, fP_numInFam, fP_empStatus, fP_highestSchoolLev, fP_ID, fP_longWeight, fP_activeSaving)
 
+
+
+#create a survey design 
+familyPanelSurvey <- svydesign(id=~primarySamplingUnit,
+                               strat=~stratification, 
+                               weights=~longWeight,
+                               data=familyPanel,
+                               nest=TRUE)
+
+# get some moments of my active saving data
+vars <- c("age","famIncome", "activeSaving", "numInFam", "empStatus", "highestSchoolLev", "impWealthWOE")
+niceNames <- c("Age", "Family Income", "Active Saving", "Number in Family", "Employment Status", "Highest School Level Achieved (years)", "Wealth (excluding housing equity)")
+niceName <- 1
+years <- c('1989', '1994', '1999', '2001', '2003', '2005', '2007', '2009', '2011', '2013')
+for(j in vars){
+  #N, min, max
+  k <- grep(j,colnames(familyPanelSurvey$variables))
+  assign(paste("N",j,sep=''), c())
+  min <- c()
+  max <- c()
+  # sd
+  assign(paste(j,"Var",sep=''), svyby(~eval(as.symbol(j)), ~factor(year),familyPanelSurvey,svyvar))
+  assign(paste("sd",j,sep=''),c())
+  assign(paste("se",j,sep=''),c())
+  l <- 1
+  for (i in years){
+    # counts
+    assign(paste("N", j,sep=''),c(eval(as.name(paste("N",j,sep=''))),
+                                  nrow(subset(familyPanelSurvey, familyPanelSurvey$variables$year==i &familyPanelSurvey$variables$longWeight>0))))
+    min <-c(min,min(subset(familyPanelSurvey,
+                           familyPanelSurvey$variables$year==i & familyPanelSurvey$variables$longWeight>0)$variables[k]))
+    max <- c(max,max(subset(familyPanelSurvey,
+                            familyPanelSurvey$variables$year==i & familyPanelSurvey$variables$longWeight>0)$variables[k]))
+    # delta method to get SD and SE of SD
+    assign(paste("sd",j,sep=''), c(eval(as.name(paste("sd",j,sep=''))), sqrt(vcov(eval(as.name(paste(j,"Var",sep='')))))[i,i]/(4*coef(eval(as.name(paste(j,"Var",sep=''))))[i])))
+    assign(paste("se",j,sep=''), c(eval(as.name(paste("se",j,sep=''))),sqrt(diag(coef(eval(as.name(paste(j,"Var",sep=''))))))[l,l]))
+    l <- l + 1
+  }
+  # put together the N columns
+  assign(paste("N",j,sep=''),cbind(eval(as.name(paste("N",j,sep=''))),
+                                   min,
+                                   max,
+                                   years))
+  
+  
+  # rename the N columns
+  assign(paste("N",j,sep=''), as.data.frame(eval(as.name(paste("N",j,sep='')))))
+  assign(paste("N",j,sep=''), rename(eval(as.name(paste("N",j,sep=''))),
+                                     c("V1"="N")))
+  # means
+  assign(paste(j,"Means",sep=''),svyby(~eval(as.symbol(j)), ~factor(year),familyPanelSurvey,svymean))
+  assign(paste(j,"Means",sep=''),subset(eval(as.name(paste(j,"Means",sep=''))),select=-c(factor('year'))))
+  # rename the means
+  assign(paste(j,"Means",sep=''), as.data.frame(eval(as.name(paste(j,"Means",sep='')))))
+  assign(paste(j,"Means",sep=''), rename(eval(as.name(paste(j,"Means",sep=''))),
+                                         c("eval(as.symbol(j))"="mean")))
+  # medians
+  assign(paste(j,"Medians",sep=''),
+         svyby(~eval(as.symbol(j)), ~factor(year),familyPanelSurvey,svyquantile, quantiles=0.5,ci=TRUE))
+  assign(paste(j,"Medians",sep=''),subset(eval(as.name(paste(j,"Medians",sep=''))),select=-c(factor('year'))))
+  
+  # sd
+  assign(paste(j,"SDs",sep=''), cbind(eval(as.name(paste("sd",j,sep=''))), eval(as.name(paste("se",j,sep='')))))
+  # rename the sds
+  assign(paste(j,"SDs",sep=''), as.data.frame(eval(as.name(paste(j,"SDs",sep='')))))
+  assign(paste(j,"SDs",sep=''), rename(eval(as.name(paste(j,"SDs",sep=''))),
+                                       c("V1"="sd",
+                                         "V2"="se")))
+  # put all together
+  assign(paste(j,"ALL",sep=''),
+         merge(eval(as.name(paste(j,"Means",sep=''))),
+               eval(as.name(paste(j,"SDs",sep=''))), by='row.names'))
+  assign(paste(j,"ALL",sep=''),
+         merge(eval(as.name(paste("N",j,sep=''))),
+               eval(as.name(paste(j,"ALL",sep=''))), by.x='years', by.y='Row.names'))
+  assign(paste(j,"ALL",sep=''),
+         merge(eval(as.name(paste(j,"Medians",sep=''))),
+               eval(as.name(paste(j,"ALL",sep=''))), by.x='row.names', by.y='years'))
+  assign(paste(j,"ALL",sep=''),
+         eval(as.name(paste(j,"ALL",sep='')))[,c(1,4,5,6,7,8,2,3,10,9)])
+  assign(paste(j,"ALL",sep=''),rename(eval(as.name(paste(j,"ALL",sep=''))),
+                                      c("Row.names"="year",
+                                        "se.x"="SE",
+                                        "sd" ="$\\sigma_{x}$",
+                                        "se.y"="SE",
+                                        "eval(as.symbol(j))"="median",
+                                        "se"="SE"
+                                      )))
+  # spit out to latex
+  xtable <- xtable(eval(as.name(paste(j,"ALL",sep=''))))
+  digits(xtable) <-2
+  caption(xtable) <-niceNames[niceName]
+  niceName <- niceName + 1
+  print(xtable,include.rownames=FALSE, caption.placement="top",size="footnotesize",  sanitize.text.function = function(x) {x})                                  
+}
+
+rm(familyPanelSurvey)
+rm(activeSavingALL, activeSavingMeans, activeSavingMedians, activeSavingSDs, activeSavingVar)
+rm(ageALL, ageMeans, ageMedians, ageSDs, ageVar)
+rm(empStatusALL, empStatusMeans, empStatusMedians, empStatusSDs, empStatusVar)
+rm(famIncomeALL, famIncomeMeans, famIncomeMedians, famIncomeSDs, famIncomeVar)
+rm(Nage,NactiveSaving, NempStatus, NfamIncome, NhighestSchoolLev, NimpWealthWOE, NnumInFam)
+rm(highestSchoolLevALL, highestSchoolLevMeans, highestSchoolLevMedians, highestSchoolLevSDs, highestSchoolLevVar)
+rm(numInFamALL, numInFamMeans, numInFamMedians, numInFamSDs, numInFamVar)
+rm(impWealthWOEALL, impWealthWOEMeans, impWealthWOEMedians, impWealthWOESDs, impWealthWOEVar)
+rm(xtable, i, j, k, l, max, min, niceName, niceNames, sdactiveSaving, sdage, sdempStatus, sdfamIncome, sdhighestSchoolLev, sdimpWealthWOE, sdnumInFam)
+rm(seage, seactiveSaving, seempStatus, sefamIncome, sehighestSchoolLev, seimpWealthWOE, senumInFam)
+rm(vars, years)
+
+
+# compare my active savings with PSID active savings
+#create a survey design 
+
+fP_PSIDasSurvey <- svydesign(id=~primarySamplingUnit,
+                             strat=~stratification, 
+                             weights=~longWeight89,
+                             data=fP_PSIDas,
+                             nest=TRUE)
+
+k <- grep('activeSaving',colnames(fP_PSIDasSurvey$variables))
+#N, min, max
+N_PSIDas <- nrow(subset(fP_PSIDasSurvey, fP_PSIDasSurvey$variables$longWeight89>0))
+min <- min(subset(fP_PSIDasSurvey, fP_PSIDasSurvey$variables$longWeight89>0)$variables[k])
+max <- max(subset(fP_PSIDasSurvey,
+                  fP_PSIDasSurvey$variables$longWeight89>0)$variables[k])
+# sd
+PSIDasVar <- svyvar(~activeSaving, fP_PSIDasSurvey)
+# delta method to get SD and SE
+sdPSIDas <- sqrt(vcov(PSIDasVar))[1,1]/(4*vcov(PSIDasVar)[1])
+sePSIDas <- sqrt(coef(PSIDasVar))
+
+
+# put together the N columns
+N_PSIDas <- cbind(N_PSIDas,
+                  min,
+                  max)
+  
+# rename the N columns
+N_PSIDas <- as.data.frame(N_PSIDas)
+N_PSIDas <- rename(N_PSIDas, c("N_PSIDas"="N"))
+
+# means
+PSIDasMeans <- svymean(~activeSaving,fP_PSIDasSurvey)
+PSIDasMeans <- as.data.frame(PSIDasMeans)
+
+# rename the mean
+PSIDasMeans <-rename(PSIDasMeans, c("activeSaving"='se'))
+
+
+# medians
+PSIDasMedians <- svyquantile(~activeSaving, fP_PSIDasSurvey,quantiles=0.5,ci=TRUE)$quantiles[1]
+PSIDasMedians <- c(PSIDasMedians, attr(svyquantile(~activeSaving, fP_PSIDasSurvey,quantiles=0.5,ci=TRUE), "SE"))
+PSIDasMedians <- as.data.frame(PSIDasMedians)
+
+# sd
+PSIDasSDs <- cbind(sdPSIDas, sePSIDas)
+PSIDasSDs <- as.data.frame(PSIDasSDs)
+# rename the sds
+PSIDasSDs <- rename(PSIDasSDs, c("sdPSIDas"="sd",
+                                 "sePSIDas"="se"))
+# put all together
+PSIDALL <- merge(PSIDasMeans, PSIDasSDs, by='row.names')
+PSIDALL <- merge(N_PSIDas,PSIDALL)
+PSIDALL <- subset(PSIDALL, select =-c(Row.names))
+PSIDALL <- cbind(PSIDasMedians[2,1], PSIDALL)
+PSIDALL <- cbind(PSIDasMedians[1,1], PSIDALL)
+PSIDALL <- rename(PSIDALL, c("PSIDasMedians[2, 1]" = "SE","PSIDasMedians[1, 1]" = "median" ))
+PSIDALL <- PSIDALL[,c(3,4,5,6,7,8,9,1,2)]
+PSIDALL <- rename(PSIDALL,c("se.x"="SE",
+                            "sd" ="$\\sigma_{x}$",
+                            "se.y"="SE"))
+# spit out to latex
+  xtable <- xtable(eval(as.name(paste(j,"ALL",sep=''))))
+  digits(xtable) <-2
+  caption(xtable) <-niceNames[niceName]
+  niceName <- niceName + 1
+  print(xtable,include.rownames=FALSE, caption.placement="top",size="footnotesize",  sanitize.text.function = function(x) {x})                                  
+
+
+
+rm(activeSavingALL, activeSavingMeans, activeSavingMedians, activeSavingSDs, activeSavingVar)
+rm(ageALL, ageMeans, ageMedians, ageSDs, ageVar)
+rm(empStatusALL, empStatusMeans, empStatusMedians, empStatusSDs, empStatusVar)
+rm(famIncomeALL, famIncomeMeans, famIncomeMedians, famIncomeSDs, famIncomeVar)
+rm(Nage,NactiveSaving, NempStatus, NfamIncome, NhighestSchoolLev, NimpWealthWOE, NnumInFam)
+rm(highestSchoolLevALL, highestSchoolLevMeans, highestSchoolLevMedians, highestSchoolLevSDs, highestSchoolLevVar)
+rm(numInFamALL, numInFamMeans, numInFamMedians, numInFamSDs, numInFamVar)
+rm(impWealthWOEALL, impWealthWOEMeans, impWealthWOEMedians, impWealthWOESDs, impWealthWOEVar)
+rm(xtable, i, j, k, l, max, min, niceName, niceNames, sdactiveSaving, sdage, sdempStatus, sdfamIncome, sdhighestSchoolLev, sdimpWealthWOE, sdnumInFam)
+rm(seage, seactiveSaving, seempStatus, sefamIncome, sehighestSchoolLev, seimpWealthWOE, senumInFam)
+rm(vars, years)
