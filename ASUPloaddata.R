@@ -1017,35 +1017,35 @@ w <- rename(w, c("er30001" = "1968IntNum",
 # get rid of NA/DK wealth data
 years <- c('89','94','99','01','03','05','07','09','11','13')
 # only a subset in '84
-f84 <- subset(f84, realEstateEquity84<9999998 & farmBusiness84<9999998 &
-                stocks84<9999998 & impWealthWOE84<9999998)
+f84 <- subset(f84, realEstateEquity84<9999997 & farmBusiness84<9999997 &
+                stocks84<9999997 & impWealthWOE84<9999997)
 # create 13 real estate equity variable
 f13$realEstateEquity13 <- f13$realEstateAssets13-f13$realEstateDebt13
 f13 <-subset(f13, select=-c(realEstateAssets13, realEstateDebt13))
 for(i in years){
   assign(paste("f",i,sep=''), subset(eval(as.name(paste("f",i,sep=''))),
-         eval(as.symbol(paste("annuityAdd",i,sep='')))<9999998 &
-           eval(as.symbol(paste("realEstateBought",i,sep='')))<9999998 &
-           eval(as.symbol(paste("realEstateImprovement",i,sep='')))<9999998 &
-           eval(as.symbol(paste("investFarmBusiness",i,sep='')))<9999998 &
-           eval(as.symbol(paste("stocksPurchased",i,sep='')))<9999998 &
-           eval(as.symbol(paste("assetsRemoved",i,sep='')))<9999998 &
-           eval(as.symbol(paste("debtsAdded",i,sep='')))<9999998 &
-           eval(as.symbol(paste("impWealthWOE",i,sep='')))<9999998 &
-           eval(as.symbol(paste("realEstateEquity",i,sep='')))<9999998 &
-           eval(as.symbol(paste("farmBusiness",i,sep='')))<9999998 &
-           eval(as.symbol(paste("stocks",i,sep='')))<9999998 &
-           eval(as.symbol(paste("pensionsCashed",i,sep='')))<9999998 &
-           eval(as.symbol(paste("realEstateSold",i,sep='')))<9999998 &
-           eval(as.symbol(paste("farmBusinessSold",i,sep='')))<9999998 &
-           eval(as.symbol(paste("stocksSold",i,sep='')))<9999998 &
-           eval(as.symbol(paste("debtsRemoved",i,sep='')))<9999998 &
-           eval(as.symbol(paste("assetsAdded",i,sep='')))<9999998 &
-           eval(as.symbol(paste("inheritanceReceived",i,sep='')))<9999998))
+         eval(as.symbol(paste("annuityAdd",i,sep='')))<9999997 &
+           eval(as.symbol(paste("realEstateBought",i,sep='')))<9999997 &
+           eval(as.symbol(paste("realEstateImprovement",i,sep='')))<9999997 &
+           eval(as.symbol(paste("investFarmBusiness",i,sep='')))<9999997 &
+           eval(as.symbol(paste("stocksPurchased",i,sep='')))<9999997 &
+           eval(as.symbol(paste("assetsRemoved",i,sep='')))<9999997 &
+           eval(as.symbol(paste("debtsAdded",i,sep='')))<9999997 &
+           eval(as.symbol(paste("impWealthWOE",i,sep='')))<9999997 &
+           eval(as.symbol(paste("realEstateEquity",i,sep='')))<9999997 &
+           eval(as.symbol(paste("farmBusiness",i,sep='')))<9999997 &
+           eval(as.symbol(paste("stocks",i,sep='')))<9999997 &
+           eval(as.symbol(paste("pensionsCashed",i,sep='')))<9999997 &
+           eval(as.symbol(paste("realEstateSold",i,sep='')))<9999997 &
+           eval(as.symbol(paste("farmBusinessSold",i,sep='')))<9999997 &
+           eval(as.symbol(paste("stocksSold",i,sep='')))<9999997 &
+           eval(as.symbol(paste("debtsRemoved",i,sep='')))<9999997 &
+           eval(as.symbol(paste("assetsAdded",i,sep='')))<9999997 &
+           eval(as.symbol(paste("inheritanceReceived",i,sep='')))<9999997))
 }
 rm(i)
 # PSID's active saving variable - drop NA
-f89 <- subset(f89, f89$activeSaving <9999998)
+f89 <- subset(f89, f89$activeSaving <9999997)
 
 
 # create the unbalanced panel:
@@ -1823,7 +1823,7 @@ fP_highestSchoolLev <-subset(fP_highestSchoolLev,select=-c(variable))
 #familyPanel <-join_all(list(familyPanel,fP_activeSaving,fP_impWealthWOE,fP_age, fP_famIncome, fP_numInFam, fP_empStatus, fP_highestSchoolLev), by=c('uniqueID','year'), type='inner')
 #familyPanel <- na.omit(familyPanel)
 #save(familyPanel, file='famPanel.R')
-#load(file='famPanel.R')
+load(file='famPanel.R')
 rm(fP_activeSaving, fP_age, fP_empStatus, fP_famIncome, fP_highestSchoolLev, fP_ID,
    fP_impWealthWOE, fP_longWeight, fP_numInFam)
 
@@ -1842,6 +1842,7 @@ vars <- c("age","famIncome", "activeSaving", "numInFam", "empStatus", "highestSc
 niceNames <- c("Age", "Family Income", "Active Saving", "Number in Family", "Employment Status", "Highest School Level Achieved (years)", "Wealth (excluding housing equity)")
 niceName <- 1
 years <- c('1989', '1994', '1999', '2001', '2003', '2005', '2007', '2009', '2011', '2013')
+setwd("/Users/Rachel/Documents/PhD/PhD\ Thesis/Chapter2/")
 for(j in vars){
   #N, min, max
   k <- grep(j,colnames(familyPanelSurvey$variables))
@@ -1862,8 +1863,8 @@ for(j in vars){
     max <- c(max,max(subset(familyPanelSurvey,
                             familyPanelSurvey$variables$year==i & familyPanelSurvey$variables$longWeight>0)$variables[k]))
     # delta method to get SD and SE of SD
-    assign(paste("sd",j,sep=''), c(eval(as.name(paste("sd",j,sep=''))), sqrt(vcov(eval(as.name(paste(j,"Var",sep='')))))[i,i]/(4*coef(eval(as.name(paste(j,"Var",sep=''))))[i])))
-    assign(paste("se",j,sep=''), c(eval(as.name(paste("se",j,sep=''))),sqrt(diag(coef(eval(as.name(paste(j,"Var",sep=''))))))[l,l]))
+    assign(paste("sd",j,sep=''), c(eval(as.name(paste("sd",j,sep=''))),sqrt(diag(coef(eval(as.name(paste(j,"Var",sep=''))))))[l,l]))
+    assign(paste("se",j,sep=''), c(eval(as.name(paste("se",j,sep=''))), sqrt(vcov(eval(as.name(paste(j,"Var",sep='')))))[i,i]/(4*coef(eval(as.name(paste(j,"Var",sep=''))))[i])))
     l <- l + 1
   }
   # put together the N columns
@@ -1907,7 +1908,7 @@ for(j in vars){
          merge(eval(as.name(paste(j,"Medians",sep=''))),
                eval(as.name(paste(j,"ALL",sep=''))), by.x='row.names', by.y='years'))
   assign(paste(j,"ALL",sep=''),
-         eval(as.name(paste(j,"ALL",sep='')))[,c(1,4,5,6,7,8,2,3,10,9)])
+         eval(as.name(paste(j,"ALL",sep='')))[,c(1,4,5,6,7,8,2,3,9,10)])
   assign(paste(j,"ALL",sep=''),rename(eval(as.name(paste(j,"ALL",sep=''))),
                                       c("Row.names"="year",
                                         "se.x"="SE",
@@ -1920,12 +1921,15 @@ for(j in vars){
   xtable <- xtable(eval(as.name(paste(j,"ALL",sep=''))))
   digits(xtable) <-2
   caption(xtable) <-niceNames[niceName]
+  print(xtable,include.rownames=FALSE, caption.placement="top",size="footnotesize",  sanitize.text.function = function(x) {x},type="latex",file = paste("moments", niceName,".txt",sep=''))                                  
   niceName <- niceName + 1
-  print(xtable,include.rownames=FALSE, caption.placement="top",size="footnotesize",  sanitize.text.function = function(x) {x})                                  
 }
+setwd("/Users/Rachel/Documents/PhD/Research ideas/Nonlinearity/PSID/ActiveSaving/")
+
+
 
 rm(familyPanelSurvey)
-rm(activeSavingALL, activeSavingMeans, activeSavingMedians, activeSavingSDs, activeSavingVar)
+rm(activeSavingMeans, activeSavingMedians, activeSavingSDs, activeSavingVar)
 rm(ageALL, ageMeans, ageMedians, ageSDs, ageVar)
 rm(empStatusALL, empStatusMeans, empStatusMedians, empStatusSDs, empStatusVar)
 rm(famIncomeALL, famIncomeMeans, famIncomeMedians, famIncomeSDs, famIncomeVar)
@@ -1956,8 +1960,8 @@ max <- max(subset(fP_PSIDasSurvey,
 # sd
 PSIDasVar <- svyvar(~activeSaving, fP_PSIDasSurvey)
 # delta method to get SD and SE
-sdPSIDas <- sqrt(vcov(PSIDasVar))[1,1]/(4*vcov(PSIDasVar)[1])
-sePSIDas <- sqrt(coef(PSIDasVar))
+sdPSIDas <- sqrt(coef(PSIDasVar))
+sePSIDas <- sqrt(vcov(PSIDasVar))[1,1]/(4*vcov(PSIDasVar)[1])
 
 
 # put together the N columns
@@ -1995,17 +1999,25 @@ PSIDALL <- subset(PSIDALL, select =-c(Row.names))
 PSIDALL <- cbind(PSIDasMedians[2,1], PSIDALL)
 PSIDALL <- cbind(PSIDasMedians[1,1], PSIDALL)
 PSIDALL <- rename(PSIDALL, c("PSIDasMedians[2, 1]" = "SE","PSIDasMedians[1, 1]" = "median" ))
-PSIDALL <- PSIDALL[,c(3,4,5,6,7,8,9,1,2)]
+PSIDALL <- PSIDALL[,c(3,4,5,6,7,1,2,8,9)]
 PSIDALL <- rename(PSIDALL,c("se.x"="SE",
                             "sd" ="$\\sigma_{x}$",
-                            "se.y"="SE"))
-# spit out to latex
-  xtable <- xtable(eval(as.name(paste(j,"ALL",sep=''))))
-  digits(xtable) <-2
-  caption(xtable) <-niceNames[niceName]
-  niceName <- niceName + 1
-  print(xtable,include.rownames=FALSE, caption.placement="top",size="footnotesize",  sanitize.text.function = function(x) {x})                                  
+                            "se.y"="SE.2",
+                            "SE" = "SE.1"))
+PSIDALL$variable <- "PSID"
+activeSavingTest <-subset(activeSavingALL[1,], select=-(year))
+activeSavingTest$variable <-'mine'
 
+PSIDALL <- rbind(PSIDALL, activeSavingTest)
+PSIDALL <- PSIDALL[,c(10,1,2,3,4,5,6,7,8,9)]
+PSIDALL <- rename(PSIDALL, c("SE.1"="SE","SE.2"="SE"))
+# spit out to latex
+xtable <- xtable(PSIDALL)
+digits(xtable) <-2
+caption(xtable) <-"Active Saving Comparison"
+setwd("/Users/Rachel/Documents/PhD/PhD\ Thesis/Chapter2/")
+print(xtable,include.rownames=FALSE, caption.placement="top",size="footnotesize",  sanitize.text.function = function(x) {x}, type="latex",file = 'ActiveSavingComparison.txt')                                  
+setwd("/Users/Rachel/Documents/PhD/Research ideas/Nonlinearity/PSID/ActiveSaving/")
 
 
 rm(activeSavingALL, activeSavingMeans, activeSavingMedians, activeSavingSDs, activeSavingVar)
