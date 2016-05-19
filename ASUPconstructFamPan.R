@@ -38,17 +38,17 @@ f89 <- subset(f89, f89$activeSaving <9999997)
 
 w$uniqueID <- (w$'1968IntNum'*1000) + w$'1968PersonNum'
 # only houshold heads (NOTE THIS IS AN OR (hhHeads at some but not all points--- remember to subset later when joining year to year))
-w <- subset(w, (w$sequenceNum84<=20 & w$hhRelStatus84==10)|
-              (w$sequenceNum89<=20 & w$hhRelStatus89==10) |
-              (w$sequenceNum94<=20 & w$hhRelStatus94==10) |
-              (w$sequenceNum99<=20 & w$hhRelStatus99==10) |
-              (w$sequenceNum01<=20 & w$hhRelStatus01==10) |
-              (w$sequenceNum03<=20 & w$hhRelStatus03==10) |
-              (w$sequenceNum05<=20 & w$hhRelStatus05==10) |
-              (w$sequenceNum07<=20 & w$hhRelStatus07==10) |
-              (w$sequenceNum09<=20 & w$hhRelStatus09==10) |
-              (w$sequenceNum11<=20 & w$hhRelStatus11==10) |
-              (w$sequenceNum13<=20 & w$hhRelStatus13==10) )
+#w <- subset(w, (w$sequenceNum84<=20 & w$hhRelStatus84==10)|
+#              (w$sequenceNum89<=20 & w$hhRelStatus89==10) |
+#              (w$sequenceNum94<=20 & w$hhRelStatus94==10) |
+#              (w$sequenceNum99<=20 & w$hhRelStatus99==10) |
+#              (w$sequenceNum01<=20 & w$hhRelStatus01==10) |
+#              (w$sequenceNum05<=20 & w$hhRelStatus05==10) |
+#              (w$sequenceNum03<=20 & w$hhRelStatus03==10) |
+#              (w$sequenceNum07<=20 & w$hhRelStatus07==10) |
+#              (w$sequenceNum09<=20 & w$hhRelStatus09==10) |
+#              (w$sequenceNum11<=20 & w$hhRelStatus11==10) |
+#              (w$sequenceNum13<=20 & w$hhRelStatus13==10) )
 
 
 w$age84[w$age84 == 999 |w$age84==0] <- NA
