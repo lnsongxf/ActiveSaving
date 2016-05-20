@@ -328,9 +328,39 @@ fP_hhRelStatus$year <- ifelse(fP_hhRelStatus$variable=='hhRelStatus84',1984,
 fP_hhRelStatus <- rename(fP_hhRelStatus, c('value' = 'hhRelStatus'))
 fP_hhRelStatus <-subset(fP_hhRelStatus,select=-c(variable))
 
+# intNum ##################################################################################################################################################################
+fP_intNum <- familyPanel[c('uniqueID',
+                                'intNum84',
+                                'intNum89',
+                                'intNum94',
+                                'intNum99',
+                                'intNum01',
+                                'intNum03',
+                                'intNum05',
+                                'intNum07',
+                                'intNum09',
+                                'intNum11',
+                                'intNum13' )]
 
 
-# merge all of these files together
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_intNum <- melt(fP_intNum, id.vars=c("uniqueID"))
+fP_intNum$year <- ifelse(fP_intNum$variable=='intNum84',1984,
+                              ifelse(fP_intNum$variable=='intNum89',1989,
+                                     ifelse(fP_intNum$variable=='intNum94',1994,
+                                            ifelse(fP_intNum$variable=='intNum99',1999,
+                                                   ifelse(fP_intNum$variable=='intNum01',2001,
+                                                          ifelse(fP_intNum$variable=='intNum03',2003,
+                                                                 ifelse(fP_intNum$variable=='intNum05',2005,
+                                                                        ifelse(fP_intNum$variable=='intNum07',2007,
+                                                                               ifelse(fP_intNum$variable=='intNum09',2009,
+                                                                                      ifelse(fP_intNum$variable=='intNum11',2011,2013))))))))))
+
+fP_intNum <- rename(fP_intNum, c('value' = 'intNum'))
+fP_intNum <-subset(fP_intNum,select=-c(variable))
+
+# merge all of these files together #################################################################################################################
 
 familyPanel <- merge(fP_ID, fP_longWeight, by='uniqueID')
 familyPanel <- merge(familyPanel, fP_impWealthWOE, by = c('uniqueID', 'year'))
@@ -341,6 +371,7 @@ familyPanel <- merge(familyPanel, fP_empStatus, by = c('uniqueID', 'year'))
 familyPanel <- merge(familyPanel, fP_highestSchoolLev, by = c('uniqueID', 'year'))
 familyPanel <- merge(familyPanel, fP_sequenceNum, by = c('uniqueID', 'year'))
 familyPanel <- merge(familyPanel, fP_hhRelStatus, by = c('uniqueID', 'year'))
+familyPanel <- merge(familyPanel, fP_intNum, by = c('uniqueID', 'year'))
 familyPanel <-merge(familyPanel,fP_activeSaving, by=c('uniqueID', 'year'), all=TRUE)
 familyPanel <-merge(familyPanel,fP_PSIDas, by=c('uniqueID', 'year'), all=TRUE)
 
@@ -351,6 +382,6 @@ familyPanel <- subset(familyPanel, select=-c(sequenceNum, hhRelStatus))
 #save(familyPanel, file='famPanel.R')
 #load(file='famPanel.R')
 rm(fP_activeSaving, fP_age, fP_empStatus, fP_famIncome, fP_highestSchoolLev, fP_ID,
-   fP_impWealthWOE, fP_longWeight, fP_numInFam, fP_PSIDas, fP_hhRelStatus, fP_sequenceNum)
+   fP_impWealthWOE, fP_longWeight, fP_numInFam, fP_PSIDas, fP_hhRelStatus, fP_sequenceNum, fP_intNum)
 
 
