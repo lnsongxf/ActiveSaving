@@ -370,6 +370,8 @@ familyPanel <- subset(familyPanel, select=c(uniqueID, stratification, primarySam
                                             sequenceNum03, sequenceNum05, sequenceNum07, sequenceNum09, sequenceNum11, sequenceNum13,
                                             hhRelStatus84, hhRelStatus89, hhRelStatus94, hhRelStatus94, hhRelStatus99, hhRelStatus01,
                                             hhRelStatus03, hhRelStatus05, hhRelStatus07, hhRelStatus09, hhRelStatus11, hhRelStatus13,
+                                            intNum84,intNum89, intNum94, intNum99, intNum01, intNum01, intNum03, intNum05, intNum07,
+                                            intNum09, intNum11, intNum13,
                                             activeSaving
                                             
 ))
