@@ -360,6 +360,37 @@ fP_intNum$year <- ifelse(fP_intNum$variable=='intNum84',1984,
 fP_intNum <- rename(fP_intNum, c('value' = 'intNum'))
 fP_intNum <-subset(fP_intNum,select=-c(variable))
 
+# impWealthWE ##################################################################################################################################################################
+fP_impWealthWE <- familyPanel[c('uniqueID',
+                           'impWealthWE84',
+                           'impWealthWE89',
+                           'impWealthWE94',
+                           'impWealthWE99',
+                           'impWealthWE01',
+                           'impWealthWE03',
+                           'impWealthWE05',
+                           'impWealthWE07',
+                           'impWealthWE09',
+                           'impWealthWE11',
+                           'impWealthWE13' )]
+
+
+
+# Specify id.vars: the variables to keep but not split apart on
+fP_impWealthWE <- melt(fP_impWealthWE, id.vars=c("uniqueID"))
+fP_impWealthWE$year <- ifelse(fP_impWealthWE$variable=='impWealthWE84',1984,
+                         ifelse(fP_impWealthWE$variable=='impWealthWE89',1989,
+                                ifelse(fP_impWealthWE$variable=='impWealthWE94',1994,
+                                       ifelse(fP_impWealthWE$variable=='impWealthWE99',1999,
+                                              ifelse(fP_impWealthWE$variable=='impWealthWE01',2001,
+                                                     ifelse(fP_impWealthWE$variable=='impWealthWE03',2003,
+                                                            ifelse(fP_impWealthWE$variable=='impWealthWE05',2005,
+                                                                   ifelse(fP_impWealthWE$variable=='impWealthWE07',2007,
+                                                                          ifelse(fP_impWealthWE$variable=='impWealthWE09',2009,
+                                                                                 ifelse(fP_impWealthWE$variable=='impWealthWE11',2011,2013))))))))))
+
+fP_impWealthWE <- rename(fP_impWealthWE, c('value' = 'impWealthWE'))
+fP_impWealthWE <-subset(fP_impWealthWE,select=-c(variable))
 # merge all of these files together #################################################################################################################
 
 familyPanel <- merge(fP_ID, fP_longWeight, by='uniqueID')
@@ -372,6 +403,7 @@ familyPanel <- merge(familyPanel, fP_highestSchoolLev, by = c('uniqueID', 'year'
 familyPanel <- merge(familyPanel, fP_sequenceNum, by = c('uniqueID', 'year'))
 familyPanel <- merge(familyPanel, fP_hhRelStatus, by = c('uniqueID', 'year'))
 familyPanel <- merge(familyPanel, fP_intNum, by = c('uniqueID', 'year'))
+familyPanel <- merge(familyPanel, fP_impWealthWE, by = c('uniqueID', 'year'))
 familyPanel <-merge(familyPanel,fP_activeSaving, by=c('uniqueID', 'year'), all=TRUE)
 familyPanel <-merge(familyPanel,fP_PSIDas, by=c('uniqueID', 'year'), all=TRUE)
 
