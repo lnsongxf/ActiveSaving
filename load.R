@@ -108,7 +108,6 @@ f84.KeepVars <-
     'v10003',   # state
     'v11079',   # longitudinal weight
     'v10899'   # real estate equity
-    
   )
 
 
@@ -155,7 +154,7 @@ f89.KeepVars <-
     'v17610',   # activeSaving (computed by PSID, for comparison)
     'v17609',   # total wealth 84
     'v17389',   # total wealth 89
-    'v17387'  # value of all other inheritances
+    'v17387'   # value of all other inheritances
   )
 
 w89.KeepVars <-
@@ -197,7 +196,9 @@ f94.KeepVars <-
     'er3811',   # stocks sold
     'er3822',   # debts removed by movers out
     'er3827',   # assets added by movers in
-    'er3838'   # inheritance recieved
+    'er3838',   # inheritance recieved
+    'er3843',   # 2nd inheritance
+    'er3848'   # 3rd inheritance 
   )
 
 
@@ -242,7 +243,9 @@ f99.KeepVars <-
     'er15089',   # stocks sold
     'er15100',   # debts removed by movers out 
     'er15106',   # assets added by movers in
-    'er15117'   # inheritance received
+    'er15117',   # inheritance received
+    'er15122',   # 2nd inheritance
+    'er15127'   # 3rd inheritance
   )
 w99.KeepVars <-
   c(
@@ -283,7 +286,9 @@ f01.KeepVars <-
     'er19285',   # stocks sold
     'er19296',   # debt removed by movers out
     'er19302',   # assets added by movers in
-    'er19313'   # inheritance received
+    'er19313',   # inheritance received
+    'er19318',   # 2nd inheritance
+    'er19323'   # 3rd inheritance  
   )
 w01.KeepVars <-
   c(
@@ -324,7 +329,9 @@ f03.KeepVars <-
     'er22680',   # stocks sold
     'er22691',   # debts removed by movers out
     'er22697',   # assets added by movers in
-    'er22708'   # inheritance received
+    'er22708',   # inheritance received
+    'er22713',   # 2nd inheritance
+    'er22718'   # 3rd inheritance 
   )
 w03.KeepVars <-
   c(
@@ -365,8 +372,10 @@ f05.KeepVars <-
     'er26661',   # stocks sold
     'er26672',   # debts removed by movers out
     'er26678',   # assets added by movers in
-    'er26689'   # inheritance received
-  )
+    'er26689',   # inheritance received
+    'er26694',   # 2nd inheritance
+    'er26699'   # 3rd inheritance
+    )
 
 w05.KeepVars <-
   c(
@@ -407,7 +416,9 @@ f07.KeepVars <-
     'er37679',   # stocks sold
     'er37690',   # debts removed by movers out
     'er37696',   # assets added by movers in
-    'er37707'   # inheritance received
+    'er37707',   # inheritance received
+    'er37712',   # 2nd inheritance
+    'er37717'   # 3rd inheritance
   )
 w07.KeepVars <-
   c(
@@ -453,7 +464,9 @@ f09.KeepVars <-
     'er43681',   # debts removed by movers out
     'er43687',   # assets added by movers in
     'er43698',   # inheritance received
-    'er46968'   # imputed wealth without equity 
+    'er46968',   # imputed wealth without equity 
+    'er43703',   # 2nd inheritance
+    'er43708'   # 3rd inheritance
   )
 # 2011
 f11.KeepVars <-
@@ -493,7 +506,9 @@ f11.KeepVars <-
     'er49026',   # debts removed by movers out
     'er49032',   # assets added by movers in
     'er49043',   # inheritance received
-    'er52392'   # imputed wealth without equity
+    'er52392',   # imputed wealth without equity
+    'er49048',   # 2nd inheritance
+    'er49053'   # 3rd inheritance
   )
 # 2013
 f13.KeepVars <-
@@ -534,7 +549,9 @@ f13.KeepVars <-
     'er54782',   # debts removed by movers out
     'er54788',   # assets added by movers in 
     'er54799',   # inheritance received
-    'er58209'   # imputed wealth without equity
+    'er58209',   # imputed wealth without equity
+    'er54804',   # 2nd inheritance
+    'er54809'   # 3rd inheritance
   )
 
 # extract data 
@@ -626,7 +643,7 @@ f89 <- rename(f89, c('v16302' = 'intNum89',
                      'v17352' = 'realEstateImprovement89',
                      'v17365' = 'stocksPurchased89',
                      'v17610' = 'activeSaving',
-                     'v17387' = 'allOthInheritance'))
+                     'v17387' = 'allOthInheritance89'))
 f94 <- rename(f94, c('er2002' = 'intNum94',
                      'er3731' = 'farmBusiness94',
                      'er3736' = 'stocks94',
@@ -658,7 +675,9 @@ f94 <- rename(f94, c('er2002' = 'intNum94',
                      'er3822' = 'debtsRemoved94',
                      'er3827' = 'assetsAdded94',
                      'er3838' = 'inheritanceReceived94',
-                     'S316' = 'impWealthWOE94'))
+                     'S316' = 'impWealthWOE94',
+                     'er3843' = 'secondInheritance94',
+                     'er3848' = 'thirdInheritance94'))
 f99 <- rename(f99, c('er13002' = 'intNum99',
                      'er15002' = 'farmBusiness99',
                      'er15007' = 'stocks99',
@@ -690,7 +709,9 @@ f99 <- rename(f99, c('er13002' = 'intNum99',
                      'er15100' = 'debtsRemoved99',
                      'er15106' = 'assetsAdded99',
                      'er15117' = 'inheritanceReceived99',
-                     'S416' = 'impWealthWOE99'))                     
+                     'S416' = 'impWealthWOE99',
+                     'er15122' = 'secondInheritance99',
+                     'er15127' = 'thirdInheritance99'))                     
 f01 <- rename(f01, c('er17002' = 'intNum01', 
                      'er19198' = 'farmBusiness01',
                      'er19203' = 'stocks01',
@@ -722,7 +743,9 @@ f01 <- rename(f01, c('er17002' = 'intNum01',
                      'er19296' = 'debtsRemoved01',
                      'er19302' = 'assetsAdded01',
                      'er19313' = 'inheritanceReceived01',
-                     'S516' = 'impWealthWOE01'))
+                     'S516' = 'impWealthWOE01',
+                     'er19318' = 'secondInheritance01',
+                     'er19323' = 'thirdInheritance01'))
 f03 <- rename(f03, c('er21002' = 'intNum03',
                      'er22563' = 'farmBusiness03',
                      'er22568' = 'stocks03',
@@ -754,7 +777,9 @@ f03 <- rename(f03, c('er21002' = 'intNum03',
                      'er22691' = 'debtsRemoved03',
                      'er22697' = 'assetsAdded03',
                      'er22708' = 'inheritanceReceived03',
-                     'S616' = 'impWealthWOE03'))
+                     'S616' = 'impWealthWOE03',
+                     'er22713' = 'secondInheritance03',
+                     'er22718' = 'thirdInheritance03'))
 f05 <- rename(f05, c('er25002' = 'intNum05',
                      'er26544' = 'farmBusiness05',
                      'er26549' = 'stocks05',
@@ -786,7 +811,9 @@ f05 <- rename(f05, c('er25002' = 'intNum05',
                      'er26672' = 'debtsRemoved05',
                      'er26678' = 'assetsAdded05',
                      'er26689' = 'inheritanceReceived05',
-                     'S716' = 'impWealthWOE05'))
+                     'S716' = 'impWealthWOE05',
+                     'er26694' = 'secondInheritance05',
+                     'er26699' = 'thirdInheritance05'))
 f07 <- rename(f07, c('er36002' = 'intNum07',
                      'er37562' = 'farmBusiness07', 
                      'er37567' = 'stocks07',
@@ -818,7 +845,9 @@ f07 <- rename(f07, c('er36002' = 'intNum07',
                      'er37690' = 'debtsRemoved07',
                      'er37696' = 'assetsAdded07',
                      'er37707' = 'inheritanceReceived07',
-                     'S816' = 'impWealthWOE07'))
+                     'S816' = 'impWealthWOE07',
+                     'er37712' = 'secondInheritance07',
+                     'er37717' = 'thirdInheritance07'))
 f09 <- rename(f09, c('er42002' = 'intNum09',
                      'er43553' = 'farmBusiness09',
                      'er46942' = 'checkingAccount09',
@@ -850,7 +879,9 @@ f09 <- rename(f09, c('er42002' = 'intNum09',
                      'er43681' = 'debtsRemoved09',
                      'er43687' = 'assetsAdded09',
                      'er43698' = 'inheritanceReceived09',
-                     'er46968' = 'impWealthWOE09'))
+                     'er46968' = 'impWealthWOE09',
+                     'er43703' = 'secondInheritance09',
+                     'er43708' = 'thirdInheritance09'))
 f11 <- rename(f11, c('er47302' = 'intNum11',
                      'er48878' = 'farmBusiness11',
                      'er52350' = 'checkingAccount11',
@@ -886,7 +917,9 @@ f11 <- rename(f11, c('er47302' = 'intNum11',
                      'er49026' = 'debtsRemoved11',
                      'er49032' = 'assetsAdded11',
                      'er49043' = 'inheritanceReceived11',
-                     'er52392' = 'impWealthWOE11'))
+                     'er52392' = 'impWealthWOE11',
+                     'er49048' = 'secondInheritance11',
+                     'er49053' = 'thirdInheritance11'))
 f13 <- rename(f13, c('er53002' = 'intNum13',
                      'er54625' = 'farmBusiness13',
                      'er58161' = 'checkingSavings13',
@@ -923,7 +956,9 @@ f13 <- rename(f13, c('er53002' = 'intNum13',
                      'er54782' = 'debtsRemoved13',
                      'er54788' = 'assetsAdded13',
                      'er54799' = 'inheritanceReceived13',
-                     'er58209' = 'impWealthWOE13'))
+                     'er58209' = 'impWealthWOE13',
+                     'er54804' = 'secondInheritance13',
+                     'er54809' = 'thirdInheritance13'))
 # rename all the individual variables something useful
 w <- rename(w, c("er30001" = "1968IntNum",
                  'er30002' = "1968PersonNum",
