@@ -154,7 +154,8 @@ f89.KeepVars <-
     'v17384',   # inheritance recieved
     'v17610',   # activeSaving (computed by PSID, for comparison)
     'v17609',   # total wealth 84
-    'v17389'   # total wealth 89
+    'v17389',   # total wealth 89
+    'v17387'  # value of all other inheritances
   )
 
 w89.KeepVars <-
@@ -624,7 +625,8 @@ f89 <- rename(f89, c('v16302' = 'intNum89',
                      'v17355' = 'investFarmBusiness89',
                      'v17352' = 'realEstateImprovement89',
                      'v17365' = 'stocksPurchased89',
-                     'v17610' = 'activeSaving'))
+                     'v17610' = 'activeSaving',
+                     'v17387' = 'allOthInheritance'))
 f94 <- rename(f94, c('er2002' = 'intNum94',
                      'er3731' = 'farmBusiness94',
                      'er3736' = 'stocks94',
