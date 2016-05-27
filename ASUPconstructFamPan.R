@@ -30,26 +30,34 @@ for(i in years){
                                        eval(as.symbol(paste("stocksSold",i,sep='')))<9999997 &
                                        eval(as.symbol(paste("debtsRemoved",i,sep='')))<9999997 &
                                        eval(as.symbol(paste("assetsAdded",i,sep='')))<9999997 &
-                                       eval(as.symbol(paste("inheritanceReceived",i,sep='')))<9999997))
+                                       eval(as.symbol(paste("inheritanceReceived",i,sep='')))<9999997
+                                       ))
 }
 rm(i)
 # PSID's active saving variable - drop NA
 f89 <- subset(f89, f89$activeSaving <9999997)
+# value of all other inheritances http://simba.isr.umich.edu/cb.aspx?vList=V17387
+# in 1989 there is only one variable for 'all other inheritances
+f89 <- subset(f89, f89$allOthInheritance89 <9999999)
+# all other years - 2 variables: make my own allOtherInheritance variable
+for(i in years[2:10]){
+  assign(paste("f",i,sep=''), subset(eval(as.name(paste("f",i,sep=''))),
+                                     eval(as.symbol(paste("secondInheritance",i,sep='')))<9999997 &
+                                       eval(as.symbol(paste("thirdInheritance",i,sep='')))<9999997 ))
+}
+f94$allOthInheritance94<- f94$secondInheritance94 + f94$thirdInheritance94 
+f99$allOthInheritance99<- f99$secondInheritance99 + f99$thirdInheritance99 
+f01$allOthInheritance01<- f01$secondInheritance01 + f01$thirdInheritance01 
+f03$allOthInheritance03<- f03$secondInheritance03 + f03$thirdInheritance03 
+f05$allOthInheritance05<- f05$secondInheritance05 + f05$thirdInheritance05 
+f07$allOthInheritance07<- f07$secondInheritance07 + f07$thirdInheritance07 
+f09$allOthInheritance09<- f09$secondInheritance09 + f09$thirdInheritance09 
+f11$allOthInheritance11<- f11$secondInheritance11 + f11$thirdInheritance11 
+f13$allOthInheritance13<- f13$secondInheritance13 + f13$thirdInheritance13 
 
+
+# create a unique ID variable (according to PSID instructions)
 w$uniqueID <- (w$'1968IntNum'*1000) + w$'1968PersonNum'
-# only houshold heads (NOTE THIS IS AN OR (hhHeads at some but not all points--- remember to subset later when joining year to year))
-#w <- subset(w, (w$sequenceNum84<=20 & w$hhRelStatus84==10)|
-#              (w$sequenceNum89<=20 & w$hhRelStatus89==10) |
-#              (w$sequenceNum94<=20 & w$hhRelStatus94==10) |
-#              (w$sequenceNum99<=20 & w$hhRelStatus99==10) |
-#              (w$sequenceNum01<=20 & w$hhRelStatus01==10) |
-#              (w$sequenceNum05<=20 & w$hhRelStatus05==10) |
-#              (w$sequenceNum03<=20 & w$hhRelStatus03==10) |
-#              (w$sequenceNum07<=20 & w$hhRelStatus07==10) |
-#              (w$sequenceNum09<=20 & w$hhRelStatus09==10) |
-#              (w$sequenceNum11<=20 & w$hhRelStatus11==10) |
-#              (w$sequenceNum13<=20 & w$hhRelStatus13==10) )
-
 
 w$age84[w$age84 == 999 |w$age84==0] <- NA
 w$age89[w$age89 == 999 |w$age89==0] <- NA
@@ -128,6 +136,7 @@ familyPanel$activeSaving89 <- familyPanel$annuityAdd89 +
   familyPanel$debtsRemoved89 -
   familyPanel$assetsAdded89 -
   familyPanel$inheritanceReceived89 -
+  familyPanel$allOthInheritance89 - 
   familyPanel$impWealthWOE84
 
 #89-94
@@ -152,6 +161,7 @@ familyPanel$activeSaving94 <- familyPanel$annuityAdd94 +
   familyPanel$debtsRemoved94 -
   familyPanel$assetsAdded94 -
   familyPanel$inheritanceReceived94 -
+  familyPanel$allOthInheritance94 -
   familyPanel$impWealthWOE89
 
 #94-99
@@ -176,6 +186,7 @@ familyPanel$activeSaving99 <- familyPanel$annuityAdd99 +
   familyPanel$debtsRemoved99 -
   familyPanel$assetsAdded99 -
   familyPanel$inheritanceReceived99 -
+  familyPanel$allOthInheritance99 -
   familyPanel$impWealthWOE94
 
 #99-01
@@ -200,6 +211,7 @@ familyPanel$activeSaving01 <- familyPanel$annuityAdd01 +
   familyPanel$debtsRemoved01 -
   familyPanel$assetsAdded01 -
   familyPanel$inheritanceReceived01 -
+  familyPanel$allOthInheritance01 -
   familyPanel$impWealthWOE99
 
 #01-03
@@ -224,6 +236,7 @@ familyPanel$activeSaving03 <- familyPanel$annuityAdd03 +
   familyPanel$debtsRemoved03 -
   familyPanel$assetsAdded03 -
   familyPanel$inheritanceReceived03 -
+  familyPanel$allOthInheritance03 -
   familyPanel$impWealthWOE01
 
 #03-05
@@ -248,6 +261,7 @@ familyPanel$activeSaving05 <- familyPanel$annuityAdd05 +
   familyPanel$debtsRemoved05 -
   familyPanel$assetsAdded05 -
   familyPanel$inheritanceReceived05 -
+  familyPanel$allOthInheritance05 -
   familyPanel$impWealthWOE03
 
 #05-07
@@ -296,6 +310,7 @@ familyPanel$activeSaving09 <- familyPanel$annuityAdd09 +
   familyPanel$debtsRemoved09 -
   familyPanel$assetsAdded09 -
   familyPanel$inheritanceReceived09 -
+  familyPanel$allOthInheritance09 -
   familyPanel$impWealthWOE07
 
 #09-11
@@ -320,6 +335,7 @@ familyPanel$activeSaving11 <- familyPanel$annuityAdd11 +
   familyPanel$debtsRemoved11 -
   familyPanel$assetsAdded11 -
   familyPanel$inheritanceReceived11 -
+  familyPanel$allOthInheritance11 -
   familyPanel$impWealthWOE09
 
 #11-13
@@ -344,6 +360,7 @@ familyPanel$activeSaving13 <- familyPanel$annuityAdd13 +
   familyPanel$debtsRemoved13 -
   familyPanel$assetsAdded13 -
   familyPanel$inheritanceReceived13 -
+  familyPanel$allOthInheritance13 -
   familyPanel$impWealthWOE11
 
 # drop all of the surplus wealth data
@@ -374,7 +391,7 @@ familyPanel <- subset(familyPanel, select=c(uniqueID, stratification, primarySam
                                             intNum09, intNum11, intNum13,
                                             impWealthWE84,impWealthWE89, impWealthWE94,impWealthWE99,impWealthWE01,impWealthWE03,
                                             impWealthWE05,impWealthWE07,impWealthWE09,impWealthWE11,impWealthWE13,
-                                            activeSaving
+                                            activeSaving, allOthInheritance89
                                             
 ))
 
