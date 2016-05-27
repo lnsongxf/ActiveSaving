@@ -121,6 +121,32 @@ w84.KeepVars <-
     'S116'    # imputed wealth without equity
   )
 
+
+# 1985 - just whether moved
+f85.KeepVars <-
+  c(
+    'v11102',   # family interview number 
+    'v11628'    # moved? 
+  )
+# 1986 - just whether moved
+f86.KeepVars <-
+  c(
+    'v12502',   # family interview number 
+    'v13037'    # moved?
+  )
+# 1987 - just whether moved
+f87.KeepVars <-
+  c(
+    'v13702',   # family interview number  
+    'v14140'    # moved? 
+  )
+# 1988 - just whether moved
+f88.KeepVars <-
+  c(
+    'v14802',   # family interview number 
+    'v15148'    # moved? 
+  )
+
 # 1989
 f89.KeepVars <-
   c( 
@@ -165,6 +191,34 @@ w89.KeepVars <-
     'S220',    # home equity
     'S217',    # imputed wealth with equity
     'S216'    # imputed wealth without equity
+  )
+
+# 1990 - just whether moved
+f90.KeepVars <-
+  c(
+    'v17702',   # family interview number 
+    'v18087'    # moved? 
+  )
+
+# 1991 - just whether moved
+f91.KeepVars <-
+  c(
+    'v19002',   # family interview number 
+    'v19387'    # moved? 
+  )
+
+# 1992 - just whether moved
+f92.KeepVars <-
+  c(
+    'v20302',   # family interview number 
+    'v20687'    # moved? 
+  )
+
+# 1993 - just whether moved
+f93.KeepVars <-
+  c(
+    'v21602',   # family interview number 
+    'v22441'    # moved? 
   )
 
 # 1994
@@ -213,7 +267,26 @@ w94.KeepVars <-
     'S316'    # imputed wealth without equity
   )
 
+# 1995 - just whether moved
+f95.KeepVars <-
+  c(
+    'er5002',   # family interview number
+    'er5061'    # moved?  
+  )
 
+# 1996 - just whether moved
+f96.KeepVars <-
+  c(
+    'er7002',   # family interview number 
+    'er7155'    # moved?
+  )
+
+# 1997 - just whether moved
+f97.KeepVars <-
+  c(
+    'er10002',   # family interview number 
+    'er10072'    # moved?
+  )
 # 1999
 f99.KeepVars <-
   c( 
